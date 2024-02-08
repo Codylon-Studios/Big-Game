@@ -34,10 +34,11 @@ app.get('/', (req, res) => {
   res.sendFile(join(__dirname + '/public/index.html'));
 });
 
-console.log(__dirname);
-
 io.on('connection', (socket) => {
   console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
 });
 
 server.listen(3000, () => {
