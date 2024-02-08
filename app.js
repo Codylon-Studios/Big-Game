@@ -34,8 +34,17 @@ app.get('/', (req, res) => {
   res.sendFile(join(__dirname + '/public/index.html'));
 });
 
+const players = {
+
+}
+
 io.on('connection', (socket) => {
   console.log('a user connected');
+  players[socket.id] = {
+    x: 10
+
+  }
+  console.log(players);
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
