@@ -1,3 +1,2 @@
-var canvas = document.getElementById('myCanvas');
-var ctx = canvas.getContext('2d');
 const socket = io();
+console.log("I'm working");
