@@ -31,8 +31,10 @@ const server = createServer(app);
 const io = new Server(server);
 
 app.get('/', (req, res) => {
-  res.sendFile(join(__dirname, '/index.html'));
+  res.sendFile(join(__dirname + '/public/index.html'));
 });
+
+console.log(__dirname);
 
 io.on('connection', (socket) => {
   console.log('a user connected');
