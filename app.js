@@ -24,30 +24,33 @@ app.get('/', (req, res) => {
 //--END
 
 //Creates list of players with the objects
-const players = {
+const accounts = {
 
 }
 //if is on connection console.log: a user is conected
 //socket id (random string) generated
 io.on('connection', (socket) => {
   console.log('a user connected');
-  players[socket.id] = {
+  accounts[socket.id] = {
     x: 10
     //fill in more information e.g. ELO, chess rating...
 
   }
   //broadcast to other devices event: updtplayer,
   //the objlist players is broadcasted
-  io.emit('updtplayer', players)
+  io.emit('updtplayer', accounts)
   //outputs every players object and thier attributes
-  console.log(players);
+  console.log(accounts);
   //At disconnect, outputs user disconnected
   socket.on('disconnect', () => {
     console.log('user disconnected');
-    console.log(players);
+    console.log(accounts);
   });
 });
+
 //server listens on port 3000
 server.listen(3000, () => {
   console.log('server running at http://localhost:3000');
 });
+console.log("Active players: ")
+console.log(accounts);

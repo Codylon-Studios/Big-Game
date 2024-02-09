@@ -7,6 +7,6 @@ c.fillStyle = "#ff9966"
 c.fillRect(0, 0, 200, 300)
 console.log("I'm working");
 
-socket.on('updtplayer', (players) =>{
-    
+socket.on('updtplayer', (accounts) =>{
+    console.log(accounts);
 })
