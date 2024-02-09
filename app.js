@@ -43,7 +43,8 @@ io.on('connection', (socket) => {
   console.log(accounts);
   //At disconnect, outputs user disconnected
   socket.on('disconnect', () => {
-    console.log('user disconnected');
+    console.log('a user disconnected');
+    delete accounts[socket.id];
     console.log(accounts);
   });
 });
@@ -52,5 +53,82 @@ io.on('connection', (socket) => {
 server.listen(3000, () => {
   console.log('server running at http://localhost:3000');
 });
-console.log("Active players: ")
-console.log(accounts);
+
+const { Pool } = require('pg');
+const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
+
+const pool = new Pool({
+    user: 'newuser',
+    host: 'localhost',
+    database: 'accounts',
+    password: 'password',
+    port: 5432,
+});
+
+const saltRounds = 10;
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const client = await pool.connect();
+        const result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
+        client.release();
+
+        if (result.rows.length === 0) {
+            res.status(401).send('Invalid username or password');
+            return;
+        }
+
+        const user = result.rows[0];
+        const match = await bcrypt.compare(password, user.password);
+
+        if (match) {
+            // Update sessionid with current socketid
+            const sessionid = req.socket.id;
+            await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
+            res.status(200).send('Login successful');
+        } else {
+            res.status(401).send('Invalid username or password');
+        }
+    } catch (error) {
+        console.error('Error authenticating user:', error);
+        res.status(500).send('Internal server error');
+    }
+});
+
+app.post('/', async (req, res) => {
+    const { deleteUsername, deletePassword } = req.body;
+
+    try {
+        const client = await pool.connect();
+        const result = await client.query('SELECT * FROM accounts WHERE username = $1', [deleteUsername]);
+
+        if (result.rows.length === 0) {
+            res.status(404).send('User not found');
+            return;
+        }
+
+        const user = result.rows[0];
+        const match = await bcrypt.compare(deletePassword, user.password);
+
+        if (match) {
+            await client.query('DELETE FROM accounts WHERE username = $1', [deleteUsername]);
+            res.status(200).send('User deleted successfully');
+        } else {
+            res.status(401).send('Invalid username or password');
+        }
+
+        client.release();
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).send('Internal server error');
+    }
+});
+
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
