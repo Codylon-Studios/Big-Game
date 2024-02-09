@@ -44,6 +44,7 @@ io.on('connection', (socket) => {
     x: 10
 
   }
+  io.emit('updtplayer', players)
   console.log(players);
   socket.on('disconnect', () => {
     console.log('user disconnected');
