@@ -44,6 +44,7 @@ io.on('connection', (socket) => {
   //At disconnect, outputs user disconnected
   socket.on('disconnect', () => {
     console.log('user disconnected');
+    console.log(players);
   });
 });
 //server listens on port 3000
