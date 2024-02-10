@@ -59,10 +59,10 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 
 const pool = new Pool({
-    user: 'newuser',
+    user: 'postgres',
     host: 'localhost',
     database: 'accounts',
-    password: 'password',
+    password: '',
     port: 5432,
 });
 
