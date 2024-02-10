@@ -15,6 +15,9 @@ const bcrypt = require('bcrypt');
 // Initialize Express application
 const app = express();
 
+// Define saltRounds for bcrypt hashing
+const saltRounds = 10;
+
 // Create an HTTP server using Express
 const server = createServer(app);
 
@@ -63,7 +66,7 @@ const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'accounts',
-    password: '',
+    password: 'postgres',
     port: 5432,
 });
 
