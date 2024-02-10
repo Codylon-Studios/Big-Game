@@ -60,11 +60,11 @@ server.listen(3000, () => {
 
 // Create a PostgreSQL connection pool
 const pool = new Pool({
-  user: 'newuser',
-  host: 'localhost',
-  database: 'accounts',
-  password: 'password',
-  port: 5432,
+    user: 'postgres',
+    host: 'localhost',
+    database: 'accounts',
+    password: '',
+    port: 5432,
 });
 
 // Set up body-parser middleware to parse request bodies
