@@ -2,8 +2,8 @@
 //
 //This is the main backend file
 //
-//DONT TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING
-// Import necessary modules
+//DON'T TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING
+// Import necessary modules: express, http server, socket.io, pg and bcrypt
 const express = require('express');
 const { createServer } = require('node:http');
 const { join } = require('node:path');
@@ -70,48 +70,6 @@ const pool = new Pool({
 // Set up body-parser middleware to parse request bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Handle POST request to /login route
-app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-
-  try {
-    // Connect to the PostgreSQL database
-    const client = await pool.connect();
-
-    // Query the database to retrieve the user with the given username
-    const result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
-
-    // Release the client connection
-    client.release();
-
-    // If no user found with the given username, respond with error message
-    if (result.rows.length === 0) {
-      res.status(401).send('Invalid username or password');
-      return;
-    }
-
-    // Get the user data from the query result
-    const user = result.rows[0];
-
-    // Compare the provided password with the hashed password stored in the database
-    const match = await bcrypt.compare(password, user.password);
-
-    // If passwords match, update the session ID in the database and respond with success message
-    if (match) {
-      const sessionid = req.socket.id;
-      await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
-      res.status(200).send('Login successful');
-    } else {
-      // If passwords don't match, respond with error message
-      res.status(401).send('Invalid username or password');
-    }
-  } catch (error) {
-    // If an error occurs, log it and respond with internal server error message
-    console.error('Error authenticating user:', error);
-    res.status(500).send('Internal server error');
-  }
-});
-
 // Handle POST request to root route (for deleting user)
 app.post('/', async (req, res) => {
   const { deleteUsername, deletePassword } = req.body;
@@ -152,3 +110,53 @@ app.post('/', async (req, res) => {
     res.status(500).send('Internal server error');
   }
 });
+
+
+// Handle POST request to /login route
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Connect to the PostgreSQL database
+    const client = await pool.connect();
+
+    // Query the database to retrieve the user with the given username
+    let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
+
+    // If no user found with the given username, automatically create a new entry
+    if (result.rows.length === 0) {
+      // Hash the password before storing it in the database
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      
+      // Insert a new row into the accounts table with the provided username and hashed password
+      await client.query('INSERT INTO accounts (username, password) VALUES ($1, $2)', [username, hashedPassword]);
+      
+      // Query the database again to retrieve the newly created user
+      result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
+    }
+
+    // Release the client connection
+    client.release();
+
+    // Get the user data from the query result
+    const user = result.rows[0];
+
+    // Compare the provided password with the hashed password stored in the database
+    const match = await bcrypt.compare(password, user.password);
+
+    // If passwords match, update the session ID in the database and respond with success message
+    if (match) {
+      const sessionid = req.socket.id;
+      await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
+      res.status(200).send('Login successful');
+    } else {
+      // If passwords don't match, respond with error message
+      res.status(401).send('Invalid username or password');
+    }
+  } catch (error) {
+    // If an error occurs, log it and respond with internal server error message
+    console.error('Error authenticating user:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
