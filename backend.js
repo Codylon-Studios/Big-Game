@@ -70,11 +70,17 @@ const pool = new Pool({
     port: 5432,
 });
 
+app.post('/loginsite', (req, res) => {
+  // Serve HTML file with canvas login form
+  res.sendFile(join(__dirname + '/public/login.html'));
+});
+
 // Set up body-parser middleware to parse request bodies
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
+
 
 // Handle POST request to root route (for deleting user)
-app.post('/', async (req, res) => {
+app.post('/delete', async (req, res) => {
   const { deleteUsername, deletePassword } = req.body;
 
   try {
