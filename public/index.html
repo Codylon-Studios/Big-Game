@@ -8,6 +8,11 @@
 </head>
 <body>
     <i class="fa fa-user" id="user"></i>
+    <div id="account-select">
+        <div id="account-select-login">Login</div>
+        <div id="account-select-register">Register</div>
+    </div>
+
     <canvas id="myCanvas" width="600" height="800"></canvas>
 
     <!--Login / Register form-->
@@ -43,32 +48,6 @@
                 <input type="password" id="password" name="password" placeholder="Enter your password"  required>
                 <br>
                 <input type="password" id="password-repeat" name="password-repeat" placeholder="Repeat your password"  required>
-                <br>
-                <button type="submit">Register</button>
-            </form>
-        </div>
-    </div>
-
-    <!--Register form-->
-    <div id="register-bg" style="display: none">
-        <div id="register">
-            <div id="register-header">
-                Register
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" class="close" id="register-close">
-                    <g stroke="white" stroke-linecap="round" stroke-width="2">
-                        <line x1="3" x2="7" y1="3" y2="7" />
-                        <line x1="3" x2="7" y1="7" y2="3" />
-                    </g>
-                </svg>
-            </div>
-            <form id="register-form" action="/register" method="POST">
-                <label for="username">Username</label>
-                <br>
-                <input type="text" id="username" name="username" placeholder="Enter your username" required>
-                <br>
-                <label for="password">Password</label>
-                <br>
-                <input type="password" id="password" name="password" placeholder="Enter your password"  required>
                 <br>
                 <button type="submit">Register</button>
             </form>

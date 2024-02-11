@@ -62,6 +62,7 @@ form {
     height: 250px;
     padding: 10px;
     box-sizing: border-box;
+    position: relative;
 }
 
 form > input {
@@ -81,6 +82,8 @@ form > button {
     height: 50px;
     color: white;
     font-weight: bold;
+    position: absolute;
+    bottom: 10px;
 }
 
 form > button:hover {
@@ -92,4 +95,26 @@ form > button:hover {
     color: #5ec4ff;
     font-size: 30px;
     cursor: pointer;
+}
+
+#account-select {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    width: 80px;
+    padding: 5px;
+    border-radius: 8px;
+    visibility: hidden;
+    margin-top: 5px;
+}
+
+#account-select-login, #account-select-register {
+    padding: 5px;
+    color: #4eb4ef;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+#account-select-login:hover, #account-select-register:hover {
+    background-color: #4eb4ef;
+    color: white;
 }
