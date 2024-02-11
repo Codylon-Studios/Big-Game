@@ -1,5 +1,6 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
+const socket = io();
 canvas.width = 600
 canvas.height = 700
 c.fillStyle = "#ff9966"
