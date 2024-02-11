@@ -71,7 +71,7 @@ const pool = new Pool({
 });
 
 app.post('/loginsite', (req, res) => {
-  // Serve HTML file with canvas login form
+  // Serve HTML file with login form
   res.sendFile(join(__dirname + '/public/login.html'));
 });
 
