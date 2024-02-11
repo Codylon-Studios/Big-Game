@@ -1,0 +1,95 @@
+body {
+    font-family: "Cantarell", sans-serif;
+}
+
+canvas {
+    height: 600px;
+    width: 800px;
+    border-radius: 10px;
+    position: absolute;
+    left: 50%;
+    top: 60px;
+    transform: translateX(-50%);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#account-bg {
+    visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+#account {
+    position: absolute;
+    left: 50%;
+    top: 150px;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 300px;
+    border-radius: 13px;
+    border: 4px solid rgba(255, 255, 255, 0.3)
+}
+
+#account-header {
+    background-color: #5ec4ff;
+    border-radius: 10px 10px 0px 0px;
+    height: 50px;
+    font-weight: bold;
+    font-size: large;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    color: white;
+    position: relative;
+}
+
+#close {
+    background-color: #4eb4ef;
+    padding: 3px;
+    border-radius: 100%;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+}
+
+form {
+    background-color: #f2f2f2;
+    border-radius: 0px 0px 10px 10px;
+    height: 250px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+form > input {
+    margin: 5px 0px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 7px;
+    width: 364px;
+}
+
+form > button {
+    border: none;
+    border-radius: 5px;
+    background-color: #5ec4ff;
+    margin-top: 50px;
+    width: 380px;
+    height: 50px;
+    color: white;
+    font-weight: bold;
+}
+
+form > button:hover {
+    cursor: pointer;
+    background-color: #4eb4ef;
+}
+
+#user {
+    color: #5ec4ff;
+    font-size: 30px;
+    cursor: pointer;
+}

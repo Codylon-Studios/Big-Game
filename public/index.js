@@ -10,3 +10,11 @@ console.log("I'm working");
 socket.on('updtplayer', (accounts) =>{
     console.log(accounts);
 })
+
+document.getElementById("user").addEventListener("click", () => {
+    document.getElementById("account-bg").style.visibility = "visible";
+});
+
+document.getElementById("close").addEventListener("click", () => {
+    document.getElementById("account-bg").style.visibility = "hidden";
+});
