@@ -122,7 +122,6 @@ app.post('/register', async (req, res) => {
 
   if (password != password_repeat){
     res.status(401).send('Passwords dont match');
-    res.sendFile(join(__dirname + '/public/index.html'));
   }else{
   try {
     // Connect to the PostgreSQL database
