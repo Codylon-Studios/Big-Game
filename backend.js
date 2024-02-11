@@ -66,7 +66,7 @@ const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'accounts',
-    password: 'geheim',
+    password: 'postgres',
     port: 5432,
 });
 
@@ -75,7 +75,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Handle POST request to root route (for deleting user)
 app.post('/', async (req, res) => {
-  const { deleteUsername, deletePassword } = req.body;
+  /*const { deleteUsername, deletePassword } = req.body;
 
   try {
     // Connect to the PostgreSQL database
@@ -111,6 +111,38 @@ app.post('/', async (req, res) => {
     // If an error occurs, log it and respond with internal server error message
     console.error('Error deleting user:', error);
     res.status(500).send('Internal server error');
+  }*/
+});
+
+// Handle POST request to /register route
+app.post('/register', async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+  const password_repeat = req.body.password_repeat;
+
+  if (password != password_repeat){
+    res.status(401).send('Passwords dont match');
+    res.sendFile(join(__dirname + '/public/index.html'));
+  }else{
+  try {
+    // Connect to the PostgreSQL database
+    const client = await pool.connect();
+    
+    // Hash the password before storing it in the database
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+      
+    // Insert a new row into the accounts table with the provided username and hashed password
+    await client.query('INSERT INTO accounts (username, password) VALUES ($1, $2)', [username, hashedPassword]);
+    //Inserts current socketid
+    const sessionid = req.socket.id;
+    await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
+    client.release();
+    res.status(200).send('Registration successful');
+  } catch (error) {
+    // If an error occurs, log it and respond with internal server error message
+    console.error('Error while storing user data', error);
+    res.status(500).send('Internal database server error');
+    }
   }
 });
 
@@ -126,16 +158,10 @@ app.post('/login', async (req, res) => {
     // Query the database to retrieve the user with the given username
     let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
 
-    // If no user found with the given username, automatically create a new entry
+    // If no user found with the given username, give error
     if (result.rows.length === 0) {
-      // Hash the password before storing it in the database
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
-      
-      // Insert a new row into the accounts table with the provided username and hashed password
-      await client.query('INSERT INTO accounts (username, password) VALUES ($1, $2)', [username, hashedPassword]);
-      
-      // Query the database again to retrieve the newly created user
-      result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
+      console.error('Error authenticating user:', error);
+      res.status(500).send('Invalid username or password');
     }
 
     // Release the client connection
@@ -162,4 +188,8 @@ app.post('/login', async (req, res) => {
     res.status(500).send('Internal server error');
   }
 });
+
+
+
+
 
