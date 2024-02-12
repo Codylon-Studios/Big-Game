@@ -127,8 +127,9 @@ app.post('/', async (req, res) => {
 app.post('/register', async (req, res) => {
   /* Result codes:
     0: Registration successful
-    1: Passwords don't match
-    2: Username already used
+    1: Internal server error
+    2: Passwords don't match
+    3: Username already used
   */
   const username = req.body.username;
   const password = req.body.password;
@@ -138,7 +139,7 @@ app.post('/register', async (req, res) => {
   let errors = []
 
   if (password != passwordRepeat){
-    errors.push("1")
+    errors.push("2")
   }
   try {
     // Connect to the PostgreSQL database
@@ -150,7 +151,7 @@ app.post('/register', async (req, res) => {
     // Check if username is already in use
     let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
     if (result.rows.length != 0) {
-      errors.push("2")
+      errors.push("3")
     }
     else if (errors.length == 0) {
       // Insert a new row into the accounts table with the provided username and hashed password
@@ -166,7 +167,7 @@ app.post('/register', async (req, res) => {
   } catch (error) {
     // If an error occurs, log it and respond with internal server error message
     console.error('Error while storing user data', error);
-    res.status(500).send('Internal database server error');
+    res.status(200).send('1');
   }
 });
 
@@ -175,7 +176,8 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
   /* Result codes:
     0: Login successful
-    1: Incorrect username or password
+    1: Internal server error
+    2: Incorrect username or password
   */
   const { username, password } = req.body;
 
@@ -188,7 +190,8 @@ app.post('/login', async (req, res) => {
 
     // If no user found with the given username, give error
     if (result.rows.length === 0) {
-      res.status(200).send("1");
+      res.status(200).send("2");
+      return
     }
 
     // Release the client connection
@@ -207,11 +210,11 @@ app.post('/login', async (req, res) => {
       res.status(200).send("0");
     } else {
       // If passwords don't match, respond with error message
-      res.status(200).send("1");
+      res.status(200).send("2");
     }
   } catch (error) {
     // If an error occurs, log it and respond with internal server error message
     console.error('Error authenticating user:', error);
-    res.status(500).send('Internal server error');
+    res.status(200).send('1');
   }
 });

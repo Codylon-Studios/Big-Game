@@ -1,0 +1,61 @@
+.notification-box-main {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 180px;
+    height: fit-content;
+    padding: 10px 20px 10px 10px;
+    border-radius: 10px;
+    transition: 1.5s;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+    transform: translateX(223px);
+}
+
+.notification-box-main-green {
+    background-color: #bf9;
+    color: #050;
+    border: 2px solid #492;
+}
+
+.notification-box-main-red {
+    background-color: #f99;
+    color: #500;
+    border: 2px solid #922;
+}
+
+.notification-box-main-blue {
+    background-color: #9cf;
+    color: #025;
+    border: 2px solid #259;
+}
+
+.notification-box-main > svg {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    cursor: pointer;
+}
+
+.notification-box-main-green > svg > g {
+    stroke: #492;
+}
+
+.notification-box-main-green > svg:hover > g {
+    stroke: #050;
+}
+
+.notification-box-main-red > svg > g {
+    stroke: #922;
+}
+
+.notification-box-main-red > svg:hover > g {
+    stroke: #500;
+}
+
+.notification-box-main-gray > svg > g {
+    stroke: #259;
+}
+
+.notification-box-main-gray > svg:hover > g {
+    stroke: #025;
+}
