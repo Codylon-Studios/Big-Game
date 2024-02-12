@@ -72,6 +72,12 @@ app.get('/',(req,res)=>{
   res.sendFile(join(__dirname + '/public/index.html'))
 });
 
+app.get('/@/:username', function(req, res) {
+  const username = req.params.username;
+  res.send(`Welcome to the profile page of ${username}`);
+});
+
+
 //
 //APP.POST
 //
@@ -124,7 +130,7 @@ app.post('/register', async (req, res) => {
   const password_repeat = req.body.password_repeat;
 
   if (password != password_repeat){
-    res.status(401).send('Passwords dont match');
+    res.status(401).send('Passwords don\'t match');
   }else{
   try {
     // Connect to the PostgreSQL database
@@ -139,7 +145,7 @@ app.post('/register', async (req, res) => {
     const sessionid = req.socket.id;
     await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
     client.release();
-    res.status(200).send('Registration successful');
+    res.status(200).send('Registration successful; please log in again.');
   } catch (error) {
     // If an error occurs, log it and respond with internal server error message
     console.error('Error while storing user data', error);
@@ -179,7 +185,8 @@ app.post('/login', async (req, res) => {
     if (match) {
       const sessionid = req.socket.id;
       await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
-      res.status(200).send('Login successful');
+      //res.status(200).send('Login successful');
+      res.redirect(`/@/${username}`);
     } else {
       // If passwords don't match, respond with error message
       res.status(401).send('Invalid username or password');
