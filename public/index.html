@@ -27,27 +27,27 @@
                     </g>
                 </svg>
             </div>
-            <form id="login-form" action="/login" method="POST">
-                <label for="username">Username</label>
+            <form id="login-form">
+                <label for="login-username">Username</label>
                 <br>
-                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                <input type="text" id="login-username" name="username" placeholder="Enter your username" required>
                 <br>
-                <label for="password">Password</label>
+                <label for="login-password">Password</label>
                 <br>
-                <input type="password" id="password" name="password" placeholder="Enter your password"  required>
+                <input type="password" id="login-password" name="password" placeholder="Enter your password"  required>
                 <br>
                 <button type="submit">Login</button>
             </form>
-              <form id="register-form" action="/register" method="POST">
-                <label for="username">Username</label>
+              <form id="register-form">
+                <label for="register-username">Username</label>
                 <br>
-                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                <input type="text" id="register-username" name="username" placeholder="Enter your username" required>
                 <br>
-                <label for="password">Password</label>
+                <label for="register-password">Password</label>
                 <br>
-                <input type="password" id="password" name="password" placeholder="Enter your password"  required>
+                <input type="password" id="register-password" name="password" placeholder="Enter your password"  required>
                 <br>
-                <input type="password" id="password_repeat" name="password_repeat" placeholder="Repeat your password"  required>
+                <input type="password" id="register-password-repeat" name="passwordRepeat" placeholder="Repeat your password"  required>
                 <br>
                 <button type="submit">Register</button>
             </form>
@@ -66,6 +66,7 @@
         <button type="submit">Delete Account</button>
     </form>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
     <script src="index.js"></script>
 </body>
