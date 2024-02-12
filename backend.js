@@ -19,7 +19,14 @@ const saltRounds = 10;
 // Create an HTTP server using Express
 const server = createServer(app);
 // Initialize Socket.io for real-time communication
-const io = new Server(server);
+const io = new Server(server, {
+  cookie: {
+    name: "io",
+    path: "/",
+    httpOnly: true,
+    sameSite: "lax"
+  }
+});
 //Create a PostgreSQL connection pool
 const pool = new Pool({
   user: 'postgres',
