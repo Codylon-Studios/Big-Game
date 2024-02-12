@@ -29,7 +29,7 @@ const io = new Server(server, {
 });
 //Create a PostgreSQL connection pool
 const pool = new Pool({
-  user: 'postgres',
+  user: 'newuser',
   host: 'localhost',
   database: 'accounts',
   password: 'postgres',
@@ -198,11 +198,11 @@ app.post('/login', async (req, res) => {
       res.status(200).send("1");
     }
 
-    // Release the client connection
-    client.release();
-
     // Get the user data from the query result
     const user = result.rows[0];
+
+    // Release the client connection
+    client.release();
 
     // Compare the provided password with the hashed password stored in the database
     const match = await bcrypt.compare(password, user.password);
