@@ -116,6 +116,11 @@ app.post('/', async (req, res) => {
 
 // Handle POST request to /register route
 app.post('/register', async (req, res) => {
+  /* Result codes:
+    0: Registration successful
+    1: Passwords don't match
+    2: Username already used
+  */
   const username = req.body.username;
   const password = req.body.password;
   const passwordRepeat = req.body.passwordRepeat;
@@ -124,7 +129,7 @@ app.post('/register', async (req, res) => {
   let errors = []
 
   if (password != passwordRepeat){
-    errors.push('Passwords dont match')
+    errors.push("1")
   }
   try {
     // Connect to the PostgreSQL database
@@ -136,7 +141,7 @@ app.post('/register', async (req, res) => {
     // Check if username is already in use
     let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
     if (result.rows.length != 0) {
-      errors.push('Username already used')
+      errors.push("2")
     }
     else if (errors.length == 0) {
       // Insert a new row into the accounts table with the provided username and hashed password
@@ -145,7 +150,7 @@ app.post('/register', async (req, res) => {
       const sessionid = req.socket.id;
       await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
       client.release();
-      res.status(200).send('Registration successful');
+      res.status(200).send("0");
       return
     }
     res.status(200).send(errors)
@@ -159,6 +164,10 @@ app.post('/register', async (req, res) => {
 
 // Handle POST request to /login route
 app.post('/login', async (req, res) => {
+  /* Result codes:
+    0: Login successful
+    1: Incorrect username or password
+  */
   const { username, password } = req.body;
 
   try {
@@ -170,7 +179,7 @@ app.post('/login', async (req, res) => {
 
     // If no user found with the given username, give error
     if (result.rows.length === 0) {
-      res.status(200).send('Invalid username or password');
+      res.status(200).send("1");
     }
 
     // Release the client connection
@@ -186,10 +195,10 @@ app.post('/login', async (req, res) => {
     if (match) {
       const sessionid = req.socket.id;
       await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
-      res.status(200).send('Login successful');
+      res.status(200).send("0");
     } else {
       // If passwords don't match, respond with error message
-      res.status(200).send('Invalid username or password');
+      res.status(200).send("1");
     }
   } catch (error) {
     // If an error occurs, log it and respond with internal server error message

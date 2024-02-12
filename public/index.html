@@ -15,12 +15,12 @@
 
     <canvas id="myCanvas" width="600" height="800"></canvas>
 
-    <!--Login / Register form-->
-    <div id="account-bg">
-        <div id="account">
-            <div id="account-header">
+    <!--Login form-->
+    <div id="login-popup-bg">
+        <div id="login-popup">
+            <div id="login-popup-header">
                 <span>Login</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" id="close">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" class="popup-close">
                     <g stroke="white" stroke-linecap="round" stroke-width="2">
                         <line x1="3" x2="7" y1="3" y2="7" />
                         <line x1="3" x2="7" y1="7" y2="3" />
@@ -36,9 +36,25 @@
                 <br>
                 <input type="password" id="login-password" name="password" placeholder="Enter your password"  required>
                 <br>
+                <div class="account-error">Incorrect username or password</div>
                 <button type="submit">Login</button>
             </form>
-              <form id="register-form">
+        </div>
+    </div>
+
+    <!--Register form-->
+    <div id="register-popup-bg">
+        <div id="register-popup">
+            <div id="register-popup-header">
+                <span>Register</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" class="popup-close">
+                    <g stroke="white" stroke-linecap="round" stroke-width="2">
+                        <line x1="3" x2="7" y1="3" y2="7" />
+                        <line x1="3" x2="7" y1="7" y2="3" />
+                    </g>
+                </svg>
+            </div>
+            <form id="register-form">
                 <label for="register-username">Username</label>
                 <br>
                 <input type="text" id="register-username" name="username" placeholder="Enter your username" required>
@@ -49,6 +65,8 @@
                 <br>
                 <input type="password" id="register-password-repeat" name="passwordRepeat" placeholder="Repeat your password"  required>
                 <br>
+                <div class="account-error">Passwords don't match</div>
+                <div class="account-error">Username already taken</div>
                 <button type="submit">Register</button>
             </form>
         </div>

@@ -22,24 +22,19 @@ window.addEventListener("click", (ev) => {
 });
 
 document.getElementById("account-select-login").addEventListener("click", () => {
-    document.querySelector("#account-header > span").innerHTML = "Login";
-    document.getElementById("login-form").style.display = "block";
-    document.getElementById("register-form").style.display = "none";
-    document.getElementById("account-bg").style.visibility = "visible";
+    document.getElementById("login-popup-bg").style.visibility = "visible";
 });
 
 document.getElementById("account-select-register").addEventListener("click", () => {
-    document.querySelector("#account-header > span").innerHTML = "Register";
-    document.getElementById("register-form").style.display = "block";
-    document.getElementById("login-form").style.display = "none";
-    document.getElementById("account-bg").style.visibility = "visible";
+    document.getElementById("register-popup-bg").style.visibility = "visible";
 });
 
-document.getElementById("close").addEventListener("click", () => {
-    document.getElementById("account-bg").style.visibility = "hidden";
-    document.getElementById("login-form").style.display = "none";
-    document.getElementById("register-form").style.display = "none";
-});
+document.querySelectorAll(".popup-close").forEach((element) => {
+    element.addEventListener("click", () => {
+        document.getElementById("login-popup-bg").style.visibility = "hidden";
+        document.getElementById("register-popup-bg").style.visibility = "hidden";
+    });
+})
 
 document.getElementById("login-form").addEventListener("submit", (ev) => {
     // Send request to server
@@ -50,7 +45,13 @@ document.getElementById("login-form").addEventListener("submit", (ev) => {
                };
     $.post(url, data, function (result, status) {
         // Handle result
-        console.log(status, ":", res);
+        if (result == "0") {
+            document.getElementById("login-popup-bg").style.visibility = "hidden";
+            document.querySelectorAll("#login-form > .account-error")[0].style.display = "none";
+        }
+        else {
+            document.querySelectorAll("#login-form > .account-error")[0].style.display = "block";
+        }
     });
 });
 
@@ -64,17 +65,24 @@ document.getElementById("register-form").addEventListener("submit", (ev) => {
                };
     $.post(url, data, function (result, status) {
         // Handle result
-        if (result.includes("Username already used")) {
-            console.log("Schon genutzt")
+        if (result == "0") {
+            document.getElementById("register-popup-bg").style.visibility = "hidden";
+            document.querySelectorAll("#register-form > .account-error")[0].style.display = "none";
+            document.querySelectorAll("#register-form > .account-error")[1].style.display = "none";
         }
-        if (result.includes("Passwords dont match")) {
-            console.log("Passwörter passen nicht")
-        }
-        if (result == "Registration successful") {
-            console.log("Alles gut")
-            document.getElementById("account-bg").style.visibility = "hidden";
-            document.getElementById("login-form").style.display = "none";
-            document.getElementById("register-form").style.display = "none";
+        else {
+            if (result.includes("1")) {
+                document.querySelectorAll("#register-form > .account-error")[0].style.display = "block";
+            }
+            else {
+                document.querySelectorAll("#register-form > .account-error")[0].style.display = "none";
+            }
+            if (result.includes("2")) {
+                document.querySelectorAll("#register-form > .account-error")[1].style.display = "block";
+            }
+            else {
+                document.querySelectorAll("#register-form > .account-error")[1].style.display = "none";
+            }
         }
     });
 });

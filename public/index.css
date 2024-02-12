@@ -13,7 +13,7 @@ canvas {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-#account-bg {
+#register-popup-bg, #login-popup-bg {
     visibility: hidden;
     background-color: rgba(0, 0, 0, 0.5);
     width: 100%;
@@ -23,18 +23,25 @@ canvas {
     left: 0;
 }
 
-#account {
+#register-popup, #login-popup {
     position: absolute;
     left: 50%;
-    top: 150px;
+    top: 100px;
     transform: translateX(-50%);
     width: 400px;
-    height: 300px;
     border-radius: 13px;
     border: 4px solid rgba(255, 255, 255, 0.3)
 }
 
-#account-header {
+#register-popup {
+    height: 370px;
+}
+
+#login-popup {
+    height: 300px;
+}
+
+#register-popup-header, #login-popup-header {
     background-color: #5ec4ff;
     border-radius: 10px 10px 0px 0px;
     height: 50px;
@@ -47,7 +54,7 @@ canvas {
     position: relative;
 }
 
-#close {
+.popup-close {
     background-color: #4eb4ef;
     padding: 3px;
     border-radius: 100%;
@@ -59,10 +66,17 @@ canvas {
 form {
     background-color: #f2f2f2;
     border-radius: 0px 0px 10px 10px;
-    height: 250px;
     padding: 10px;
     box-sizing: border-box;
     position: relative;
+}
+
+#register-form {
+    height: 320px;
+}
+
+#login-form {
+    height: 250px;
 }
 
 form > input {
@@ -117,4 +131,15 @@ form > button:hover {
 #account-select-login:hover, #account-select-register:hover {
     background-color: #4eb4ef;
     color: white;
+}
+
+.account-error {
+    background-color: #faa;
+    color: #d11;
+    margin: 5px 0px;
+    border-radius: 5px;
+    padding: 3px;
+    border: 1px solid #d11;
+    box-shadow: 0 2px 10px 0px rgba(255, 0, 0, 0.2);
+    display: none;
 }
