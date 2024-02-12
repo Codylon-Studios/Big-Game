@@ -196,6 +196,7 @@ app.post('/login', async (req, res) => {
     // If no user found with the given username, give error
     if (result.rows.length === 0) {
       res.status(200).send("1");
+      return;
     }
 
     // Get the user data from the query result
@@ -215,6 +216,7 @@ app.post('/login', async (req, res) => {
     } else {
       // If passwords don't match, respond with error message
       res.status(200).send("1");
+      return;
     }
   } catch (error) {
     // If an error occurs, log it and respond with internal server error message
