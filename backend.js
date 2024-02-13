@@ -11,6 +11,7 @@ const pgSession = require('connect-pg-simple')(session);
 const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
+const fs = require('fs');
 const { Pool } = require('pg');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
@@ -30,13 +31,11 @@ const io = new Server(server, {
   }
 });
 //Create a PostgreSQL connection pool
-const pool = new Pool({
-  user: 'newuser',
-  host: 'localhost',
-  database: 'accounts',
-  password: 'postgres',
-  port: 5432,
-});
+const dbConfig = JSON.parse(fs.readFileSync('db_config.json'));
+
+const pool = new Pool(dbConfig);
+// Make `pool` available to other parts of your application as needed
+module.exports = pool;
 // Store session IDs
 const accounts = {};
 
