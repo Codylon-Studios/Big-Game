@@ -11,11 +11,29 @@
     height: fit-content;
     padding: 10px 20px 10px 10px;
     border-radius: 10px;
-    transition: 1.5s;
     box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
-    transform: translateX(223px);
     display: block;
     margin: 10px;
+}
+
+.notification-box-progressbar {
+    height: 2px;
+    width: 206px;
+    position: absolute;
+    bottom: 0px;
+    right: 2px;
+}
+
+.notification-box-green-progressbar {
+    background-color: #492;
+}
+
+.notification-box-red-progressbar {
+    background-color: #922;
+}
+
+.notification-box-blue-progressbar {
+    background-color: #259;
 }
 
 .notification-box-main-green {
