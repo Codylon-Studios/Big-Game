@@ -50,11 +50,38 @@ document.getElementById("account-select-register").addEventListener("click", () 
     document.getElementById("register-popup-bg").style.visibility = "visible";
 });
 //clicking on dropdown logout
-document.getElementById("account-select-logout").addEventListener("click", () => {
-    console.log("logging out");
-});
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Find the logout button element
+    const logoutButton = document.getElementById('account-select-logout');
+  
+    // Add event listener to the logout button
+    logoutButton.addEventListener('click', async () => {
+      try {
+        // Send a POST request to the server's logout endpoint
+        const response = await fetch('/logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+  
+        // Check if the logout was successful
+        if (response.ok) {
+          console.log('Logout successful');
+          // Redirect to the login page or perform any other action
+        } else {
+          console.error('Logout failed');
+        }
+      } catch (error) {
+        console.error('Error during logout:', error);
+      }
+    });
+  });
+
+
 //clicking on dropdown delete account
-document.getElementById("account-select-logout").addEventListener("click", () => {
+document.getElementById("account-select-delete").addEventListener("click", () => {
     console.log("delete account");
 });
 
