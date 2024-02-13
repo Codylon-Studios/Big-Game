@@ -86,3 +86,46 @@ document.getElementById("register-form").addEventListener("submit", (ev) => {
         }
     });
 });
+
+
+// Function to check authentication status and update UI accordingly
+function updateUI() {
+    $.get('/auth', (data) => {
+      if (data.authenticated) {
+        // User is authenticated
+        $('.login').hide(); // Hide login and register options
+        $('.logout').show(); // Show logout and delete account options
+        $('.welcome-message').text(`Welcome back, ${data.user.username}!`).show();
+      } else {
+        // User is not authenticated
+        $('.login').show(); // Show login and register options
+        $('.logout').hide(); // Hide logout and delete account options
+        $('.welcome-message').hide();
+      }
+    });
+  }
+  
+  // Call updateUI when the page loads
+  $(document).ready(() => {
+    updateUI();
+  });
+  
+  // Event handler for login form submission
+  $('.login-form').submit((event) => {
+    event.preventDefault();
+    
+    // Your login form submission logic here
+  
+    // After successful login, update the UI
+    updateUI();
+  });
+  
+  // Event handler for logout button click
+  $('.logout-btn').click(() => {
+    // Send a POST request to logout endpoint
+    $.post('/logout', () => {
+      // After successful logout, update the UI
+      updateUI();
+    });
+  });
+  

@@ -7,13 +7,18 @@
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
+    <!--Import AJAX, Socket.io and index.js-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="index.js"></script>
+    <!--Include Canvas with id = myCanvas-->
+    <canvas id="myCanvas" width="600" height="800"></canvas>
+    
     <i class="fa fa-user" id="user"></i>
     <div id="account-select">
         <div id="account-select-login">Login</div>
         <div id="account-select-register">Register</div>
     </div>
-
-    <canvas id="myCanvas" width="600" height="800"></canvas>
 
     <!--Login form-->
     <div id="login-popup-bg">
@@ -71,6 +76,38 @@
             </form>
         </div>
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <!--Delete Form-->
     <form id="deleteForm" action="/" method="POST" style="display: none;">
         <div>
@@ -83,10 +120,6 @@
         </div>
         <button type="submit">Delete Account</button>
     </form>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
-    <script src="index.js"></script>
 </body>
 </html>
 

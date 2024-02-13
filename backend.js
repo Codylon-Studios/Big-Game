@@ -6,6 +6,8 @@
 //
 // Import necessary modules: express, http server, socket.io, pg and bcrypt
 const express = require('express');
+const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
 const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
@@ -70,6 +72,11 @@ server.listen(3000, () => {
 app.use(bodyParser.urlencoded({ extended: true }));
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
+app.use(session({
+  secret: 'your_secret_here',
+  resave: false,
+  saveUninitialized: true,
+}));
 
 //
 //APP.GET
@@ -79,10 +86,28 @@ app.get('/',(req,res)=>{
   res.sendFile(join(__dirname + '/public/index.html'))
 });
 
-app.get('/@/:username', function(req, res) {
-  const username = req.params.username;
-  res.send(`Welcome to the profile page of ${username}`);
+// Add a new route to check if the user is authenticated
+app.get('/auth', (req, res) => {
+  if (req.session.user) {
+    res.json({ authenticated: true, user: req.session.user });
+  } else {
+    res.json({ authenticated: false });
+  }
 });
+
+
+// Handle POST request to /logout route
+app.post('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      res.status(500).send('Internal server error');
+    } else {
+      res.status(200).send('Logout successful');
+    }
+  });
+});
+
 
 
 //
@@ -159,13 +184,14 @@ app.post('/register', async (req, res) => {
     if (result.rows.length != 0) {
       errors.push("2")
     }
-    else if (errors.length == 0) {
+    else if (errors.length === 0) {
       // Insert a new row into the accounts table with the provided username and hashed password
       await client.query('INSERT INTO accounts (username, password) VALUES ($1, $2)', [username, hashedPassword]);
       //Inserts current socketid
       const sessionid = req.socket.id;
       await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
       client.release();
+      req.session.user = { username };
       res.status(200).send("0");
       return
     }
@@ -212,6 +238,7 @@ app.post('/login', async (req, res) => {
     if (match) {
       const sessionid = req.socket.id;
       await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
+      req.session.user = { username };
       res.status(200).send("0");
     } else {
       // If passwords don't match, respond with error message
