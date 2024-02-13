@@ -13,7 +13,7 @@ canvas {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-#register-popup-bg, #login-popup-bg {
+#register-popup-bg, #login-popup-bg, #delete-popup-bg{
     visibility: hidden;
     background-color: rgba(0, 0, 0, 0.5);
     width: 100%;
@@ -23,7 +23,7 @@ canvas {
     left: 0;
 }
 
-#register-popup, #login-popup {
+#register-popup, #login-popup, #delete-popup{
     position: absolute;
     left: 50%;
     top: 100px;
@@ -33,7 +33,7 @@ canvas {
     border: 4px solid rgba(255, 255, 255, 0.3)
 }
 
-#register-popup {
+#register-popup, #delete-popup {
     height: 370px;
 }
 
@@ -41,7 +41,7 @@ canvas {
     height: 300px;
 }
 
-#register-popup-header, #login-popup-header {
+#register-popup-header, #login-popup-header, #delete-popup-header{
     background-color: #5ec4ff;
     border-radius: 10px 10px 0px 0px;
     height: 50px;
@@ -71,7 +71,7 @@ form {
     position: relative;
 }
 
-#register-form {
+#register-form, #delete-form{
     height: 320px;
 }
 

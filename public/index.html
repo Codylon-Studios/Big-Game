@@ -78,49 +78,34 @@
         </div>
     </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!--Delete Form-->
-    <form id="deleteForm" action="/" method="POST" style="display: none;">
-        <div>
-            <label for="deleteUsername">Delete Username:</label>
-            <input type="text" id="deleteUsername" name="deleteUsername" required>
+    <!--Delete form-->
+        <div id="delete-popup-bg">
+            <div id="delete-popup">
+                <div id="delete-popup-header">
+                    <span>DELETE ACCOUNT</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" class="popup-close">
+                        <g stroke="white" stroke-linecap="round" stroke-width="2">
+                            <line x1="3" x2="7" y1="3" y2="7" />
+                            <line x1="3" x2="7" y1="7" y2="3" />
+                        </g>
+                    </svg>
+                </div>
+                <form id="delete-form">
+                    <label for="delete-username">Username</label>
+                    <br>
+                    <input type="text" id="delete-username" name="username" placeholder="Enter your username" required>
+                    <br>
+                    <label for="delete-password">Password</label>
+                    <br>
+                    <input type="password" id="delete-password" name="password" placeholder="Enter your password"  required>
+                    <br>
+                    <input type="password" id="delete-password-repeat" name="passwordRepeat" placeholder="Repeat your password"  required>
+                    <br>
+                    <div class="account-error">Incorrect username or password</div>
+                    <button type="submit">DELETE</button>
+                </form>
+            </div>
         </div>
-        <div>
-            <label for="deletePassword">Delete Password:</label>
-            <input type="password" id="deletePassword" name="deletePassword" required>
-        </div>
-        <button type="submit">Delete Account</button>
-    </form>
 
         <!--Import AJAX, Socket.io and index.js-->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
