@@ -13,7 +13,7 @@ const { join } = require('node:path');
 const { Server } = require('socket.io');
 const { Pool } = require('pg');
 const bodyParser = require('body-parser');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 // Initialize Express application
 const app = express();
 // Define saltRounds for bcrypt hashing
@@ -31,10 +31,10 @@ const io = new Server(server, {
 });
 //Create a PostgreSQL connection pool
 const pool = new Pool({
-  user: 'postgres',
+  user: 'newuser',
   host: 'localhost',
   database: 'accounts',
-  password: 'geheim',
+  password: 'postgres',
   port: 5432,
 });
 // Store session IDs
