@@ -120,6 +120,16 @@ form > button:hover {
     margin-top: 5px;
 }
 
+#account-select-auth {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    width: 130px;
+    padding: 5px;
+    border-radius: 8px;
+    visibility: hidden;
+    margin-top: 5px;
+}
+
+
 #account-select-login, #account-select-register, #account-select-logout, #account-select-delete {
     padding: 5px;
     cursor: pointer;
