@@ -264,32 +264,33 @@ app.post('/delete', async (req, res) => {
     // Connect to the PostgreSQL database
     const client = await pool.connect();
     // Query the database to retrieve the user with the given username
-    let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
+    const result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
+    // Release the client connection
+    client.release();
+
     // If no user found with the given username, give error
     if (result.rows.length === 0) {
       res.status(200).send("1");
       return;
     }
+
     // Get the user data from the query result
     const user = result.rows[0];
-    // Release the client connection
-    client.release();
     // Compare the provided password with the hashed password stored in the database
     const match = await bcrypt.compare(password, user.password);
 
-
-    // If passwords match, update the session ID in the database and respond with success message
+    // If passwords match, delete the account and respond with success message
     if (match) {
-      await client.query('DELETE FROM accounts WHERE username = $1', [username]);
+      await pool.query('DELETE FROM accounts WHERE username = $1', [username]);
       req.session.destroy((err) => {
         if (err) {
           console.error('Error destroying session:', err);
           res.status(500).send('Internal server error');
         } else {
-          res.status(200).send('Logout successful');
+          res.status(200).send("0");
         }
       });
-      res.status(200).send("0");
+      return;
     } else {
       // If passwords don't match, respond with error message
       res.status(200).send("1");
