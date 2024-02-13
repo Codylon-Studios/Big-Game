@@ -36,6 +36,7 @@ document.getElementById("user").addEventListener("click", () => {
 window.addEventListener("click", (ev) => {
     if (ev.target != document.getElementById("user")) { // hides the dropdown if the user doesn't click on the icon
         document.getElementById("account-select").style.visibility = "hidden";
+        document.getElementById("account-select-auth").style.visibility = "hidden";
     }
 });
 
