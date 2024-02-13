@@ -69,12 +69,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check if the logout was successful
         if (response.ok) {
           console.log('Logout successful');
-          // Redirect to the login page or perform any other action
+          document.getElementById("account-select-auth").style.visibility = "hidden";
         } else {
           console.error('Logout failed');
+          document.getElementById("account-select-auth").style.visibility = "hidden";
         }
       } catch (error) {
         console.error('Error during logout:', error);
+        document.getElementById("account-select-auth").style.visibility = "hidden";
       }
     });
   });
