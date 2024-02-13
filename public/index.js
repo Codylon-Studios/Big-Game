@@ -43,16 +43,37 @@ document.getElementById("login-form").addEventListener("submit", (ev) => {
     let data = {username: document.getElementById("login-username").value,
                 password: document.getElementById("login-password").value
                };
+    let hasResponded = false;
     $.post(url, data, function (result, status) {
+        hasResponded = true;
         // Handle result
         if (result == "0") {
             document.getElementById("login-popup-bg").style.visibility = "hidden";
             document.querySelectorAll("#login-form > .account-error")[0].style.display = "none";
+
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "green");
+            notificationBox.innerHTML = `Welcome back ${document.getElementById("login-username").value}!`;
+            document.body.appendChild(notificationBox);
+        }
+        else if (result == "1") {
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "red");
+            notificationBox.innerHTML = `An error has occurred on the server side!`;
+            document.body.appendChild(notificationBox);
         }
         else {
             document.querySelectorAll("#login-form > .account-error")[0].style.display = "block";
         }
     });
+    setTimeout(() => {
+        if (! hasResponded) {
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "red");
+            notificationBox.innerHTML = `The server didn't respond in time!`;
+            document.body.appendChild(notificationBox);
+        }
+    }, 5000);
 });
 
 document.getElementById("register-form").addEventListener("submit", (ev) => {
@@ -63,21 +84,34 @@ document.getElementById("register-form").addEventListener("submit", (ev) => {
                 password: document.getElementById("register-password").value,
                 passwordRepeat: document.getElementById("register-password-repeat").value
                };
+    let hasResponded = false;
     $.post(url, data, function (result, status) {
+        hasResponded = true;
         // Handle result
         if (result == "0") {
             document.getElementById("register-popup-bg").style.visibility = "hidden";
             document.querySelectorAll("#register-form > .account-error")[0].style.display = "none";
             document.querySelectorAll("#register-form > .account-error")[1].style.display = "none";
+            
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "green");
+            notificationBox.innerHTML = `Registered you successfully as ${document.getElementById("register-username").value}!`;
+            document.body.appendChild(notificationBox);
+        }
+        else if (result == "1") {
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "green");
+            notificationBox.innerHTML = `An error has occurred on the server side!`;
+            document.body.appendChild(notificationBox);
         }
         else {
-            if (result.includes("1")) {
+            if (result.includes("2")) {
                 document.querySelectorAll("#register-form > .account-error")[0].style.display = "block";
             }
             else {
                 document.querySelectorAll("#register-form > .account-error")[0].style.display = "none";
             }
-            if (result.includes("2")) {
+            if (result.includes("3")) {
                 document.querySelectorAll("#register-form > .account-error")[1].style.display = "block";
             }
             else {
@@ -85,4 +119,12 @@ document.getElementById("register-form").addEventListener("submit", (ev) => {
             }
         }
     });
+    setTimeout(() => {
+        if (! hasResponded) {
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "red");
+            notificationBox.innerHTML = `The server didn't respond in time!`;
+            document.body.appendChild(notificationBox);
+        }
+    }, 5000);
 });
