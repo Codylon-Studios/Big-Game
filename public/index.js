@@ -29,6 +29,11 @@ document.getElementById("account-select-register").addEventListener("click", () 
     document.getElementById("register-popup-bg").style.visibility = "visible";
 });
 
+document.getElementById("account-select-logout").addEventListener("click", () => {
+    console.log("logging out");
+});
+
+
 document.querySelectorAll(".popup-close").forEach((element) => {
     element.addEventListener("click", () => {
         document.getElementById("login-popup-bg").style.visibility = "hidden";
@@ -88,7 +93,7 @@ document.getElementById("register-form").addEventListener("submit", (ev) => {
 });
 
 
-/*// Function to check authentication status and update UI accordingly
+// Function to check authentication status and update UI accordingly
 function updateUI() {
     $.get('/auth', (data) => {
       if (data.authenticated) {
@@ -127,5 +132,5 @@ function updateUI() {
       // After successful logout, update the UI
       updateUI();
     });
-  });*/
+  });
   
