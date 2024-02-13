@@ -15,13 +15,23 @@ document.getElementById("user").addEventListener("click", () => {
     $.get('/auth', (data) => {
         if (data.authenticated) {
             document.getElementById("account-select-auth").style.visibility = "visible";
+            document.getElementById("account-select-auth").style.position = "absolute";
+            const userIconRect = document.getElementById("user").getBoundingClientRect();
+            document.getElementById("account-select-auth").style.top = `${userIconRect.bottom}px`;
+            document.getElementById("account-select-auth").style.left = `${userIconRect.left}px`;
             document.getElementById("account-select").style.visibility = "hidden";
+            
+            // Prevent clicks on account-select-auth from reaching elements underneath
+            document.getElementById("account-select-auth").addEventListener("click", (event) => {
+                event.stopPropagation();
+            });
         } else {
             document.getElementById("account-select").style.visibility = "visible";
             document.getElementById("account-select-auth").style.visibility = "hidden";
         }
-      });
+    });
 });
+
 
 window.addEventListener("click", (ev) => {
     if (ev.target != document.getElementById("user")) { // hides the dropdown if the user doesn't click on the icon
