@@ -33,20 +33,33 @@ canvas {
     border: 4px solid rgba(255, 255, 255, 0.3)
 }
 
-#register-popup, #delete-popup {
+#register-popup {
     height: 370px;
 }
 
-#login-popup {
+#login-popup, #delete-popup {
     height: 300px;
 }
 
-#register-popup-header, #login-popup-header, #delete-popup-header{
+#register-popup-header, #login-popup-header{
     background-color: #5ec4ff;
     border-radius: 10px 10px 0px 0px;
     height: 50px;
     font-weight: bold;
     font-size: large;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    color: white;
+    position: relative;
+}
+
+#delete-popup-header{
+    background-color: #d11;
+    border-radius: 10px 10px 0px 0px;
+    height: 50px;
+    font-weight: bold;
+    font-size: bold;
     align-items: center;
     justify-content: center;
     display: flex;
@@ -71,11 +84,11 @@ form {
     position: relative;
 }
 
-#register-form, #delete-form{
+#register-form{
     height: 320px;
 }
 
-#login-form {
+#login-form, #delete-form {
     height: 250px;
 }
 

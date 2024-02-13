@@ -44,10 +44,12 @@ window.addEventListener("click", (ev) => {
 //clicking on dropdown login
 document.getElementById("account-select-login").addEventListener("click", () => {
     document.getElementById("login-popup-bg").style.visibility = "visible";
+    document.getElementById("account-select").style.visibility = "hidden";
 });
 //clicking on dropdown register
 document.getElementById("account-select-register").addEventListener("click", () => {
     document.getElementById("register-popup-bg").style.visibility = "visible";
+    document.getElementById("account-select").style.visibility = "hidden";
 });
 //clicking on dropdown logout
 
@@ -84,6 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //clicking on dropdown delete account
 document.getElementById("account-select-delete").addEventListener("click", () => {
+    document.getElementById("delete-popup-bg").style.visibility = "visible";
+    document.getElementById("account-select-auth").style.visibility = "hidden";
     console.log("delete account");
 });
 
@@ -92,6 +96,7 @@ document.querySelectorAll(".popup-close").forEach((element) => {
     element.addEventListener("click", () => {
         document.getElementById("login-popup-bg").style.visibility = "hidden";
         document.getElementById("register-popup-bg").style.visibility = "hidden";
+        document.getElementById("delete-popup-bg").style.visibility = "hidden";
     });
 })
 
@@ -142,6 +147,26 @@ document.getElementById("register-form").addEventListener("submit", (ev) => {
             else {
                 document.querySelectorAll("#register-form > .account-error")[1].style.display = "none";
             }
+        }
+    });
+});
+
+
+document.getElementById("delete-form").addEventListener("submit", (ev) => {
+    // Send request to server
+    ev.preventDefault();
+    let url = "/delete";
+    let data = {username: document.getElementById("delete-username").value,
+                password: document.getElementById("delete-password").value
+               };
+    $.post(url, data, function (result, status) {
+        // Handle result
+        if (result == "0") {
+            document.getElementById("delete-popup-bg").style.visibility = "hidden";
+            document.querySelectorAll("#delete-form > .account-error")[0].style.display = "none";
+        }
+        else {
+            document.querySelectorAll("#delete-form > .account-error")[0].style.display = "block";
         }
     });
 });
