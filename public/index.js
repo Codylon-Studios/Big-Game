@@ -11,6 +11,7 @@ socket.on('updtplayer', (accounts) =>{
     console.log(accounts);
 })
 
+//clicking on user icon
 document.getElementById("user").addEventListener("click", () => {
     $.get('/auth', (data) => {
         if (data.authenticated) {
@@ -32,24 +33,29 @@ document.getElementById("user").addEventListener("click", () => {
     });
 });
 
-
+// hides the dropdown if the user doesn't click on the icon
 window.addEventListener("click", (ev) => {
-    if (ev.target != document.getElementById("user")) { // hides the dropdown if the user doesn't click on the icon
+    if (ev.target != document.getElementById("user")) {
         document.getElementById("account-select").style.visibility = "hidden";
         document.getElementById("account-select-auth").style.visibility = "hidden";
     }
 });
 
+//clicking on dropdown login
 document.getElementById("account-select-login").addEventListener("click", () => {
     document.getElementById("login-popup-bg").style.visibility = "visible";
 });
-
+//clicking on dropdown register
 document.getElementById("account-select-register").addEventListener("click", () => {
     document.getElementById("register-popup-bg").style.visibility = "visible";
 });
-
+//clicking on dropdown logout
 document.getElementById("account-select-logout").addEventListener("click", () => {
     console.log("logging out");
+});
+//clicking on dropdown delete account
+document.getElementById("account-select-logout").addEventListener("click", () => {
+    console.log("delete account");
 });
 
 
