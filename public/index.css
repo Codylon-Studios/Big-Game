@@ -34,7 +34,7 @@ canvas {
 }
 
 #register-popup {
-    height: 370px;
+    height: 420px;
 }
 
 #login-popup, #delete-popup {
@@ -67,19 +67,6 @@ canvas {
     position: relative;
 }
 
-#delete-popup-header{
-    background-color: #d11;
-    border-radius: 10px 10px 0px 0px;
-    height: 50px;
-    font-weight: bold;
-    font-size: bold;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    color: white;
-    position: relative;
-}
-
 .popup-close {
     background-color: #5be;
     padding: 3px;
@@ -97,8 +84,8 @@ form {
     position: relative;
 }
 
-#register-form{
-    height: 320px;
+#register-form {
+    height: 370px;
 }
 
 #login-form, #delete-form {
