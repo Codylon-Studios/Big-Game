@@ -191,7 +191,7 @@ app.post('/register', async (req, res) => {
       const sessionid = req.socket.id;
       await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
       client.release();
-      req.session.user = { username };
+      //req.session.user = { username };
       res.status(200).send("0");
       return
     }
@@ -238,7 +238,7 @@ app.post('/login', async (req, res) => {
     if (match) {
       const sessionid = req.socket.id;
       await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
-      req.session.user = { username };
+      //req.session.user = { username };
       res.status(200).send("0");
     } else {
       // If passwords don't match, respond with error message

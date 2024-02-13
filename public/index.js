@@ -88,7 +88,7 @@ document.getElementById("register-form").addEventListener("submit", (ev) => {
 });
 
 
-// Function to check authentication status and update UI accordingly
+/*// Function to check authentication status and update UI accordingly
 function updateUI() {
     $.get('/auth', (data) => {
       if (data.authenticated) {
@@ -127,5 +127,5 @@ function updateUI() {
       // After successful logout, update the UI
       updateUI();
     });
-  });
+  });*/
   
