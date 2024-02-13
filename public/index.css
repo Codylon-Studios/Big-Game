@@ -41,8 +41,8 @@ canvas {
     height: 300px;
 }
 
-#register-popup-header, #login-popup-header{
-    background-color: #5ec4ff;
+#register-popup-header, #login-popup-header {
+    background-color: #6cf;
     border-radius: 10px 10px 0px 0px;
     height: 50px;
     font-weight: bold;
@@ -50,7 +50,20 @@ canvas {
     align-items: center;
     justify-content: center;
     display: flex;
-    color: white;
+    color: #fff;
+    position: relative;
+}
+
+#delete-popup-header{
+    background-color: #d11;
+    border-radius: 10px 10px 0px 0px;
+    height: 50px;
+    font-weight: bold;
+    font-size: bold;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    color: #fff;
     position: relative;
 }
 
@@ -68,7 +81,7 @@ canvas {
 }
 
 .popup-close {
-    background-color: #4eb4ef;
+    background-color: #5be;
     padding: 3px;
     border-radius: 100%;
     cursor: pointer;
@@ -77,7 +90,7 @@ canvas {
 }
 
 form {
-    background-color: #f2f2f2;
+    background-color: #eee;
     border-radius: 0px 0px 10px 10px;
     padding: 10px;
     box-sizing: border-box;
@@ -94,7 +107,7 @@ form {
 
 form > input {
     margin: 5px 0px;
-    border: 1px solid #cccccc;
+    border: 1px solid #ccc;
     border-radius: 5px;
     padding: 7px;
     width: 364px;
@@ -103,7 +116,7 @@ form > input {
 form > button {
     border: none;
     border-radius: 5px;
-    background-color: #5ec4ff;
+    background-color: #6cf;
     margin-top: 50px;
     width: 380px;
     height: 50px;
@@ -128,7 +141,7 @@ form > button {
 
 form > button:hover {
     cursor: pointer;
-    background-color: #4eb4ef;
+    background-color: #5be;
 }
 
 #delete-form > button:hover {
@@ -137,7 +150,7 @@ form > button:hover {
 }
 
 #user {
-    color: #5ec4ff;
+    color: #6cf;
     font-size: 30px;
     cursor: pointer;
 }
@@ -159,7 +172,7 @@ form > button:hover {
 }
 
 #account-select-login, #account-select-register, #account-select-logout {
-    color: #4eb4ef;
+    color: #6cf;
 }
 
 #account-select-delete {
@@ -167,7 +180,7 @@ form > button:hover {
 }
 
 #account-select-login:hover, #account-select-register:hover, #account-select-logout:hover {
-    background-color: #4eb4ef;
+    background-color: #6cf;
     color: white;
 }
 
@@ -177,12 +190,12 @@ form > button:hover {
 }
 
 .account-error {
-    background-color: #faa;
-    color: #d11;
+    background-color: #f99;
+    color: #922;
     margin: 5px 0px;
     border-radius: 5px;
     padding: 3px;
-    border: 1px solid #d11;
-    box-shadow: 0 2px 10px 0px rgba(255, 0, 0, 0.2);
+    border: 1px solid #922;
+    box-shadow: 0 2px 10px 0px rgba(0, 0, 0, 0.2);
     display: none;
 }

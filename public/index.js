@@ -117,7 +117,7 @@ document.getElementById("login-form").addEventListener("submit", (ev) => {
 
             let notificationBox = document.createElement("notification-box");
             notificationBox.setAttribute("color", "green");
-            notificationBox.innerHTML = `Welcome back ${document.getElementById("login-username").value}!`;
+            notificationBox.innerHTML = `Welcome back, ${document.getElementById("login-username").value}!`;
             document.body.appendChild(notificationBox);
         }
         else if (result == "1") {
