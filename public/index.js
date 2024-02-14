@@ -55,26 +55,33 @@ document.addEventListener('DOMContentLoaded', () => {
   
     // Add event listener to the logout button
     logoutButton.addEventListener('click', async () => {
+        document.getElementById("account-select").style.visibility = "hidden";
       try {
         // Send a POST request to the server's logout endpoint
         const response = await fetch('/logout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
   
         // Check if the logout was successful
         if (response.ok) {
-          console.log('Logout successful');
-          document.getElementById("account-select-auth").style.visibility = "hidden";
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "blue");
+            notificationBox.innerHTML = `You have been logged out.`;
+            document.body.appendChild(notificationBox);
         } else {
-          console.error('Logout failed');
-          document.getElementById("account-select-auth").style.visibility = "hidden";
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "red");
+            notificationBox.innerHTML = `An error has occurred on the server side!`;
+            document.body.appendChild(notificationBox);
         }
       } catch (error) {
-        console.error('Error during logout:', error);
-        document.getElementById("account-select-auth").style.visibility = "hidden";
+        let notificationBox = document.createElement("notification-box");
+        notificationBox.setAttribute("color", "red");
+        notificationBox.innerHTML = `An error has occurred during logout!`;
+        document.body.appendChild(notificationBox);
       }
     });
   });
@@ -213,10 +220,13 @@ document.getElementById("delete-form").addEventListener("submit", (ev) => {
         if (result == "0") {
             document.getElementById("delete-popup-bg").style.visibility = "hidden";
             document.querySelectorAll("#delete-form > .account-error")[0].style.display = "none";
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "blue");
+            notificationBox.innerHTML = `Your account has been deleted.`;
+            document.body.appendChild(notificationBox);
         }
         else {
             document.querySelectorAll("#delete-form > .account-error")[0].style.display = "block";
         }
     });
 });
-  
