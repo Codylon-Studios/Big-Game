@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
 //clicking on dropdown delete account
 document.getElementById("account-select-delete").addEventListener("click", () => {
     document.getElementById("delete-popup-bg").style.visibility = "visible";
-    document.getElementById("account-select-auth").style.visibility = "hidden";
+    document.getElementById("account-select").style.visibility = "hidden";
 });
 
 
