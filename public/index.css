@@ -55,7 +55,7 @@ canvas {
 }
 
 #delete-popup-header{
-    background-color: #d11;
+    background-color: #f55;
     border-radius: 10px 10px 0px 0px;
     height: 50px;
     font-weight: bold;
@@ -68,12 +68,19 @@ canvas {
 }
 
 .popup-close {
-    background-color: #5be;
     padding: 3px;
     border-radius: 100%;
     cursor: pointer;
     position: absolute;
     right: 10px;
+}
+
+#popup-close-login, #popup-close-register {
+    background-color: #5be;
+}
+
+#popup-close-delete {
+    background-color: #e44;
 }
 
 form {
@@ -116,7 +123,7 @@ form > button {
 #delete-form > button {
     border: none;
     border-radius: 5px;
-    background-color: #d11;
+    background-color: #f55;
     margin-top: 50px;
     width:380px;
     height:50px;
@@ -133,7 +140,7 @@ form > button:hover {
 
 #delete-form > button:hover {
     cursor: pointer;
-    background-color: #f14141;
+    background-color: #e44;
 }
 
 #user {
@@ -142,7 +149,7 @@ form > button:hover {
     cursor: pointer;
 }
 
-#account-select, #account-select-auth {
+#account-select {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     width: 130px;
     padding: 5px;
@@ -163,7 +170,7 @@ form > button:hover {
 }
 
 #account-select-delete {
-    color: #d11;
+    color: #f55;
 }
 
 #account-select-login:hover, #account-select-register:hover, #account-select-logout:hover {
@@ -172,7 +179,7 @@ form > button:hover {
 }
 
 #account-select-delete:hover {
-    background-color: #d11;
+    background-color: #f55;
     color: white;
 }
 

@@ -15,9 +15,6 @@
     <div id="account-select">
         <div id="account-select-login">Login</div>
         <div id="account-select-register">Register</div>
-    </div>
-
-    <div id="account-select-auth">
         <div id="account-select-logout">Logout</div>
         <div id="account-select-delete">Delete Account</div>
     </div>
@@ -27,7 +24,7 @@
         <div id="login-popup">
             <div id="login-popup-header">
                 <span>Login</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" class="popup-close">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" class="popup-close" id="popup-close-login">
                     <g stroke="white" stroke-linecap="round" stroke-width="1.5">
                         <line x1="3" x2="7" y1="3" y2="7" />
                         <line x1="3" x2="7" y1="7" y2="3" />
@@ -54,7 +51,7 @@
         <div id="register-popup">
             <div id="register-popup-header">
                 <span>Register</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" class="popup-close">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" class="popup-close" id="popup-close-register">
                     <g stroke="white" stroke-linecap="round" stroke-width="1.5">
                         <line x1="3" x2="7" y1="3" y2="7" />
                         <line x1="3" x2="7" y1="7" y2="3" />
@@ -85,8 +82,8 @@
         <div id="delete-popup-bg">
             <div id="delete-popup">
                 <div id="delete-popup-header">
-                    <span>DELETE ACCOUNT</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" class="popup-close">
+                    <span>Delete account</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" class="popup-close" id="popup-close-delete">
                         <g stroke="white" stroke-linecap="round" stroke-width="2">
                             <line x1="3" x2="7" y1="3" y2="7" />
                             <line x1="3" x2="7" y1="7" y2="3" />
@@ -103,7 +100,7 @@
                     <input type="password" id="delete-password" name="password" placeholder="Enter your password"  required>
                     <br>
                     <div class="account-error">Incorrect username or password</div>
-                    <button type="submit">DELETE</button>
+                    <button type="submit">Delete</button>
                 </form>
             </div>
         </div>
