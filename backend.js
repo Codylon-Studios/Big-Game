@@ -23,7 +23,16 @@ const saltRounds = 10;
 // Create an HTTP server using Express
 const server = createServer(app);
 // Initialize Socket.io for real-time communication
-const io = new Server(server, {});
+const io = require('socket.io')(server, {
+  cors: {
+      origin: "http://localhost:3000",
+      methods: ["GET", "POST"],
+      transports: ['websocket', 'polling'],
+      credentials: true
+  },
+  allowEIO3: true
+});
+io.attach(server);
 //Create a PostgreSQL connection pool
 const dbConfig = JSON.parse(fs.readFileSync('db_config.json'));
 // Load environment variables from .env file
@@ -46,6 +55,8 @@ const sessionMiddleware = session({
 });
 // Make `pool` available to other parts of the application as needed
 module.exports = pool;
+//Share session context with Socket.IO
+io.engine.use(sessionMiddleware);
 // Store session IDs
 const accounts = {};
 
@@ -56,6 +67,7 @@ const accounts = {};
 io.on('connection', (socket) => {
   console.log('a user connected');
   // Add the connected user to the accounts object
+
   accounts[socket.id] = {};
   // Emit 'updtplayer' event to update clients with current player information
   io.emit('updtplayer', accounts);
@@ -89,8 +101,7 @@ app.use(sessionMiddleware);
 //
 //Serve index.html when root URL is accessed
 app.get('/',(req,res, next)=>{
-  req.session.foo = 'foo'
-  console.log(req)
+
   res.sendFile(join(__dirname + '/public/index.html'))
 });
 // Add a new route to check if the user is authenticated
