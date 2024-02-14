@@ -3,15 +3,31 @@ body {
 }
 
 canvas {
-    height: 600px;
+    height: 800px;
     width: 800px;
-    border-radius: 10px;
-    position: absolute;
+    border-radius: 10px 0px 0px 10px;
+}
+
+#sidebar {
+    height: 800px;
+    width: 400px;
+    background-color: rgb(230, 230, 230);
+    border-radius: 0px 10px 10px 0px;
+    position: relative;
+}
+
+#game {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    height: 800px;
+    width: 1200px;
     left: 50%;
     top: 60px;
     transform: translateX(-50%);
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    position: absolute;
+    border-radius: 10px;
+    display: flex;
 }
+
 
 #register-popup-bg, #login-popup-bg, #delete-popup-bg{
     visibility: hidden;
@@ -156,6 +172,9 @@ form > button:hover {
     border-radius: 8px;
     visibility: hidden;
     margin-top: 5px;
+    background-color: #fff;
+    position: absolute;
+    z-index: 1;
 }
 
 #account-select-login, #account-select-register, #account-select-logout, #account-select-delete {

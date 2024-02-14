@@ -8,9 +8,13 @@
     <link rel="stylesheet" href="customElements.css">
 </head>
 <body>
-    <!--Include Canvas with id = myCanvas-->
-    <canvas id="myCanvas" width="600" height="800"></canvas>
-    
+    <!--Game-->
+    <div id="game">
+        <!--Include Canvas with id "myCanvas"-->
+        <canvas id="myCanvas" width="400" height="400"></canvas>
+        <div id="sidebar">Apfel</div>
+    </div>
+
     <i class="fa fa-user" id="user"></i>
     <div id="account-select">
         <div id="account-select-login">Login</div>
@@ -79,36 +83,36 @@
     </div>
 
     <!--Delete form-->
-        <div id="delete-popup-bg">
-            <div id="delete-popup">
-                <div id="delete-popup-header">
-                    <span>Delete account</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" class="popup-close" id="popup-close-delete">
-                        <g stroke="white" stroke-linecap="round" stroke-width="2">
-                            <line x1="3" x2="7" y1="3" y2="7" />
-                            <line x1="3" x2="7" y1="7" y2="3" />
-                        </g>
-                    </svg>
-                </div>
-                <form id="delete-form">
-                    <label for="delete-username">Username</label>
-                    <br>
-                    <input type="text" id="delete-username" name="username" placeholder="Enter your username" required>
-                    <br>
-                    <label for="delete-password">Password</label>
-                    <br>
-                    <input type="password" id="delete-password" name="password" placeholder="Enter your password"  required>
-                    <br>
-                    <div class="account-error">Incorrect username or password</div>
-                    <button type="submit">Delete</button>
-                </form>
+    <div id="delete-popup-bg">
+        <div id="delete-popup">
+            <div id="delete-popup-header">
+                <span>Delete account</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" class="popup-close" id="popup-close-delete">
+                    <g stroke="white" stroke-linecap="round" stroke-width="2">
+                        <line x1="3" x2="7" y1="3" y2="7" />
+                        <line x1="3" x2="7" y1="7" y2="3" />
+                    </g>
+                </svg>
             </div>
+            <form id="delete-form">
+                <label for="delete-username">Username</label>
+                <br>
+                <input type="text" id="delete-username" name="username" placeholder="Enter your username" required>
+                <br>
+                <label for="delete-password">Password</label>
+                <br>
+                <input type="password" id="delete-password" name="password" placeholder="Enter your password"  required>
+                <br>
+                <div class="account-error">Incorrect username or password</div>
+                <button type="submit">Delete</button>
+            </form>
         </div>
+    </div>
 
-        <!--Import AJAX, Socket.io and index.js-->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
-        <script src="index.js"></script>
+    <!--Import AJAX, Socket.io and index.js-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="index.js"></script>
     <script src="customElements.js"></script>
 </body>
 </html>
