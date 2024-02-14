@@ -5,6 +5,7 @@
 //DON'T TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING
 //
 // Import necessary modules: express, http server, socket.io, pg and bcrypt
+const dotenv = require('dotenv');
 const express = require('express');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
@@ -22,19 +23,28 @@ const saltRounds = 10;
 // Create an HTTP server using Express
 const server = createServer(app);
 // Initialize Socket.io for real-time communication
-const io = new Server(server, {
-  cookie: {
-    name: "io",
-    path: "/",
-    httpOnly: true,
-    sameSite: "lax"
-  }
-});
+const io = new Server(server, {});
 //Create a PostgreSQL connection pool
 const dbConfig = JSON.parse(fs.readFileSync('db_config.json'));
+// Load environment variables from .env file
+dotenv.config();
 
 const pool = new Pool(dbConfig);
-// Make `pool` available to other parts of your application as needed
+//Create new session
+const sessionMiddleware = session({
+  store: new pgSession({
+    pool : pool,                // Connection pool
+    tableName : 'accounts'   // Use another table-name than the default "session" one
+    // Insert connect-pg-simple options here
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, // 30 days
+  name: 'sessionid',
+  // Insert express-session options here
+});
+// Make `pool` available to other parts of the application as needed
 module.exports = pool;
 // Store session IDs
 const accounts = {};
@@ -71,20 +81,8 @@ server.listen(3000, () => {
 app.use(bodyParser.urlencoded({ extended: true }));
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
-
-app.use(session({
-  store: new pgSession({
-    pool : pool,                // Connection pool
-    tableName : 'user_sessions'   // Use another table-name than the default "session" one
-    // Insert connect-pg-simple options here
-  }),
-  secret: process.env.FOO_COOKIE_SECRET,
-  resave: false,
-  saveUninitialized: true,
-  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, // 30 days
-  name: 'sessionid',
-  // Insert express-session options here
-}));
+//Create new session
+app.use(sessionMiddleware);
 
 //
 //APP.GET
