@@ -84,7 +84,6 @@ app.use(session({
 app.get('/',(req,res)=>{
   res.sendFile(join(__dirname + '/public/index.html'))
 });
-
 // Add a new route to check if the user is authenticated
 app.get('/auth', (req, res) => {
   if (req.session.user) {
@@ -95,6 +94,9 @@ app.get('/auth', (req, res) => {
 });
 
 
+//
+//POST
+//
 // Handle POST request to /logout route
 app.post('/logout', (req, res) => {
   req.session.destroy((err) => {
@@ -106,52 +108,8 @@ app.post('/logout', (req, res) => {
     }
   });
 });
-
-
-
-//
-//APP.POST
-//
-
 // Handle POST request to root route (for deleting user)(original)
 app.post('/', async (req, res) => {
-  /*const { deleteUsername, deletePassword } = req.body;
-
-  try {
-    // Connect to the PostgreSQL database
-    const client = await pool.connect();
-
-    // Query the database to retrieve the user with the given username
-    const result = await client.query('SELECT * FROM accounts WHERE username = $1', [deleteUsername]);
-
-    // If no user found with the given username, respond with error message
-    if (result.rows.length === 0) {
-      res.status(404).send('User not found');
-      return;
-    }
-
-    // Get the user data from the query result
-    const user = result.rows[0];
-
-    // Compare the provided password with the hashed password stored in the database
-    const match = await bcrypt.compare(deletePassword, user.password);
-
-    // If passwords match, delete the user from the database and respond with success message
-    if (match) {
-      await client.query('DELETE FROM accounts WHERE username = $1', [deleteUsername]);
-      res.status(200).send('User deleted successfully');
-    } else {
-      // If passwords don't match, respond with error message
-      res.status(401).send('Invalid username or password');
-    }
-
-    // Release the client connection
-    client.release();
-  } catch (error) {
-    // If an error occurs, log it and respond with internal server error message
-    console.error('Error deleting user:', error);
-    res.status(500).send('Internal server error');
-  }*/
 });
 
 // Handle POST request to /register route
@@ -174,10 +132,8 @@ app.post('/register', async (req, res) => {
   try {
     // Connect to the PostgreSQL database
     const client = await pool.connect();
-    
     // Hash the password before storing it in the database
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-
     // Check if username is already in use
     let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
     if (result.rows.length != 0) {
@@ -214,25 +170,19 @@ app.post('/login', async (req, res) => {
   try {
     // Connect to the PostgreSQL database
     const client = await pool.connect();
-
     // Query the database to retrieve the user with the given username
     let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
-
     // If no user found with the given username, give error
     if (result.rows.length === 0) {
       res.status(200).send("1");
       return;
     }
-
     // Get the user data from the query result
     const user = result.rows[0];
-
     // Release the client connection
     client.release();
-
     // Compare the provided password with the hashed password stored in the database
     const match = await bcrypt.compare(password, user.password);
-
     // If passwords match, update the session ID in the database and respond with success message
     if (match) {
       const sessionid = req.socket.id;
@@ -267,18 +217,15 @@ app.post('/delete', async (req, res) => {
     const result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
     // Release the client connection
     client.release();
-
     // If no user found with the given username, give error
     if (result.rows.length === 0) {
       res.status(200).send("1");
       return;
     }
-
     // Get the user data from the query result
     const user = result.rows[0];
     // Compare the provided password with the hashed password stored in the database
     const match = await bcrypt.compare(password, user.password);
-
     // If passwords match, delete the account and respond with success message
     if (match) {
       await pool.query('DELETE FROM accounts WHERE username = $1', [username]);

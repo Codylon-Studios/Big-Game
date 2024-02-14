@@ -113,9 +113,27 @@ form > button {
     bottom: 10px;
 }
 
+#delete-form > button {
+    border: none;
+    border-radius: 5px;
+    background-color: #d11;
+    margin-top: 50px;
+    width:380px;
+    height:50px;
+    color:white;
+    font-weight:bold;
+    position:absolute;
+    bottom: 10px;
+}
+
 form > button:hover {
     cursor: pointer;
     background-color: #4eb4ef;
+}
+
+#delete-form > button:hover {
+    cursor: pointer;
+    background-color: #f14141;
 }
 
 #user {
