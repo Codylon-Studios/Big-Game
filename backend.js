@@ -99,12 +99,16 @@ app.get('/auth', (req, res) => {
 //
 // Handle POST request to /logout route
 app.post('/logout', (req, res) => {
+  /* Result codes:
+    0: Registration successful
+    1: Internal server error
+  */
   req.session.destroy((err) => {
     if (err) {
       console.error('Error destroying session:', err);
-      res.status(500).send('Internal server error');
+      res.status(200).send('1');
     } else {
-      res.status(200).send('Logout successful');
+      res.status(200).send('0');
     }
   });
 });
