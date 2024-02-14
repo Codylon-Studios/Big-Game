@@ -49,42 +49,36 @@ document.getElementById("account-select-register").addEventListener("click", () 
 });
 
 // Clicking on dropdown logout
-document.addEventListener('DOMContentLoaded', () => {
-    // Find the logout button element
-    const logoutButton = document.getElementById('account-select-logout');
-  
-    // Add event listener to the logout button
-    logoutButton.addEventListener('click', async () => {
-        document.getElementById("account-select").style.visibility = "hidden";
-      try {
-        // Send a POST request to the server's logout endpoint
-        const response = await fetch('/logout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-  
-        // Check if the logout was successful
-        if (response.ok) {
+document.getElementById("account-select-logout").addEventListener("click", () => {
+    // Send request to server
+    let url = "/logout";
+    let data = {};
+    let hasResponded = false;
+    $.post(url, data, function (result, status) {
+        hasResponded = true;
+        // Handle result
+        if (result == "0") {
             let notificationBox = document.createElement("notification-box");
             notificationBox.setAttribute("color", "blue");
             notificationBox.innerHTML = `You have been logged out.`;
             document.body.appendChild(notificationBox);
-        } else {
+        }
+        else {
             let notificationBox = document.createElement("notification-box");
             notificationBox.setAttribute("color", "red");
             notificationBox.innerHTML = `An error has occurred on the server side!`;
             document.body.appendChild(notificationBox);
         }
-      } catch (error) {
-        let notificationBox = document.createElement("notification-box");
-        notificationBox.setAttribute("color", "red");
-        notificationBox.innerHTML = `An error has occurred during logout!`;
-        document.body.appendChild(notificationBox);
-      }
     });
-  });
+    setTimeout(() => {
+        if (! hasResponded) {
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "red");
+            notificationBox.innerHTML = `The server didn't respond in time!`;
+            document.body.appendChild(notificationBox);
+        }
+    }, 5000);
+});
 
 
 //clicking on dropdown delete account
