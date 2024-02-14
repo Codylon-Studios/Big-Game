@@ -117,7 +117,7 @@ document.getElementById("login-form").addEventListener("submit", (ev) => {
 
             let notificationBox = document.createElement("notification-box");
             notificationBox.setAttribute("color", "green");
-            notificationBox.innerHTML = `Welcome back ${document.getElementById("login-username").value}!`;
+            notificationBox.innerHTML = `Welcome back, ${document.getElementById("login-username").value}!`;
             document.body.appendChild(notificationBox);
         }
         else if (result == "1") {
@@ -180,6 +180,18 @@ document.getElementById("register-form").addEventListener("submit", (ev) => {
             }
             else {
                 document.querySelectorAll("#register-form > .account-error")[1].style.display = "none";
+            }
+            if (result.includes("4")) {
+                document.querySelectorAll("#register-form > .account-error")[2].style.display = "block";
+            }
+            else {
+                document.querySelectorAll("#register-form > .account-error")[2].style.display = "none";
+            }
+            if (result.includes("5")) {
+                document.querySelectorAll("#register-form > .account-error")[3].style.display = "block";
+            }
+            else {
+                document.querySelectorAll("#register-form > .account-error")[3].style.display = "none";
             }
         }
     });

@@ -119,6 +119,8 @@ app.post('/register', async (req, res) => {
     1: Internal server error
     2: Passwords don't match
     3: Username already used
+    4: Username does not fulfil conditions (Only contain letters, numbers and underscores; 4 to 20 characters)
+    5: Password does not fulfil conditions (At least 6 characters of at least 2 groups, not the username)
   */
   const username = req.body.username;
   const password = req.body.password;
@@ -135,6 +137,42 @@ app.post('/register', async (req, res) => {
     const client = await pool.connect();
     // Hash the password before storing it in the database
     const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Check if the username consists only of letters, numbers and underscore and is between 4 and 20 characters long
+    let usernameRegexp = /^([a-z]|[A-Z]|\d|_)+$/
+    if (! (usernameRegexp.test(username) && username.length >= 4 && username.length <= 20)) {
+      errors.push("4")
+      res.status(200).send(errors)
+      return
+    }
+
+    // Check if the password is at least 6 characters of at least 2 groups long and not the username
+    if (password.length < 6) {
+      errors.push("5");
+    }
+    else if (password == username) {
+      errors.push("5");
+    }
+    else {
+      let passwordGroups = 0;
+      if (/\d/.test(password)) {passwordGroups += 1};
+      if (/[a-z]/.test(password)) {passwordGroups += 1};
+      if (/[A-Z]/.test(password)) {passwordGroups += 1};
+      if (passwordGroups == 0) {
+        errors.push("5");
+      }
+      else if (passwordGroups == 1) {
+        let passwordCopy = password;
+        passwordCopy.replaceAll(/\d/g, "");
+        passwordCopy.replaceAll(/[a-z]/g, "");
+        passwordCopy.replaceAll(/[A-Z]/g, "");
+        if (passwordCopy.length == 0) {
+          errors.push("5");
+        }
+      }
+    }
+    
+
     // Check if username is already in use
     let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
     if (result.rows.length != 0) {
@@ -168,6 +206,13 @@ app.post('/login', async (req, res) => {
     2: Incorrect username or password
   */
   const { username, password } = req.body;
+
+  // Check if the username consists only of letters, numbers and underscore and is between 4 and 20 characters long
+  let usernameRegexp = /^([a-z]|[A-Z]|\d|_)+$/
+  if (! (usernameRegexp.test(username) && username.length >= 4 && username.length <= 20)) {
+    res.status(200).send("2");
+    return
+  }
 
   try {
     // Connect to the PostgreSQL database
