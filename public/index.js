@@ -11,48 +11,44 @@ socket.on('updtplayer', (accounts) =>{
     console.log(accounts);
 })
 
-//clicking on user icon
+// Clicking on user icon
 document.getElementById("user").addEventListener("click", () => {
     $.get('/auth', (data) => {
         if (data.authenticated) {
-            document.getElementById("account-select-auth").style.visibility = "visible";
-            document.getElementById("account-select-auth").style.position = "absolute";
-            const userIconRect = document.getElementById("user").getBoundingClientRect();
-            document.getElementById("account-select-auth").style.top = `${userIconRect.bottom}px`;
-            document.getElementById("account-select-auth").style.left = `${userIconRect.left}px`;
-            document.getElementById("account-select").style.visibility = "hidden";
-            
-            // Prevent clicks on account-select-auth from reaching elements underneath
-            document.getElementById("account-select-auth").addEventListener("click", (event) => {
-                event.stopPropagation();
-            });
+            document.getElementById("account-select-login").style.display = "none";
+            document.getElementById("account-select-register").style.display = "none";
+            document.getElementById("account-select-logout").style.display = "block";
+            document.getElementById("account-select-delete").style.display = "block";
         } else {
-            document.getElementById("account-select").style.visibility = "visible";
-            document.getElementById("account-select-auth").style.visibility = "hidden";
+            document.getElementById("account-select-login").style.display = "block";
+            document.getElementById("account-select-register").style.display = "block";
+            document.getElementById("account-select-logout").style.display = "none";
+            document.getElementById("account-select-delete").style.display = "none";
         }
+        document.getElementById("account-select").style.visibility = "visible";
     });
 });
 
-// hides the dropdown if the user doesn't click on the icon
+// Hides the dropdown if the user doesn't click on the icon
 window.addEventListener("click", (ev) => {
     if (ev.target != document.getElementById("user")) {
         document.getElementById("account-select").style.visibility = "hidden";
-        document.getElementById("account-select-auth").style.visibility = "hidden";
     }
 });
 
-//clicking on dropdown login
+// Clicking on dropdown login
 document.getElementById("account-select-login").addEventListener("click", () => {
     document.getElementById("login-popup-bg").style.visibility = "visible";
     document.getElementById("account-select").style.visibility = "hidden";
 });
-//clicking on dropdown register
+
+// Clicking on dropdown register
 document.getElementById("account-select-register").addEventListener("click", () => {
     document.getElementById("register-popup-bg").style.visibility = "visible";
     document.getElementById("account-select").style.visibility = "hidden";
 });
-//clicking on dropdown logout
 
+// Clicking on dropdown logout
 document.addEventListener('DOMContentLoaded', () => {
     // Find the logout button element
     const logoutButton = document.getElementById('account-select-logout');
@@ -88,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById("account-select-delete").addEventListener("click", () => {
     document.getElementById("delete-popup-bg").style.visibility = "visible";
     document.getElementById("account-select-auth").style.visibility = "hidden";
-    console.log("delete account");
 });
 
 
