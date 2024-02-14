@@ -68,7 +68,7 @@ class NotificationBox extends HTMLElement {
                     }, 1500);
                 }, duration);
             }, 1500);
-        }, 10)
+        }, 20)
     
     };
 };

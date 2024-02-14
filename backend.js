@@ -257,7 +257,8 @@ app.post('/login', async (req, res) => {
 app.post('/delete', async (req, res) => {
   /* Result codes:
     0: Deletion successful
-    1: Incorrect username or password
+    1: Internal server error
+    2: Incorrect username or password
   */
   const { username, password } = req.body;
 
@@ -270,7 +271,7 @@ app.post('/delete', async (req, res) => {
     client.release();
     // If no user found with the given username, give error
     if (result.rows.length === 0) {
-      res.status(200).send("1");
+      res.status(200).send("2");
       return;
     }
     // Get the user data from the query result
@@ -283,7 +284,7 @@ app.post('/delete', async (req, res) => {
       req.session.destroy((err) => {
         if (err) {
           console.error('Error destroying session:', err);
-          res.status(500).send('Internal server error');
+          res.status(200).send('1');
         } else {
           res.status(200).send("0");
         }
@@ -291,7 +292,7 @@ app.post('/delete', async (req, res) => {
       return;
     } else {
       // If passwords don't match, respond with error message
-      res.status(200).send("1");
+      res.status(200).send("2");
       return;
     }
   } catch (error) {
