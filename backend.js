@@ -225,7 +225,7 @@ app.post('/login', async (req, res) => {
     let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
     // If no user found with the given username, give error
     if (result.rows.length === 0) {
-      res.status(200).send("1");
+      res.status(200).send("2");
       return;
     }
     // Get the user data from the query result
@@ -242,13 +242,13 @@ app.post('/login', async (req, res) => {
       res.status(200).send("0");
     } else {
       // If passwords don't match, respond with error message
-      res.status(200).send("1");
+      res.status(200).send("2");
       return;
     }
   } catch (error) {
     // If an error occurs, log it and respond with internal server error message
     console.error('Error authenticating user:', error);
-    res.status(500).send('Internal server error');
+    res.status(200).send('1');
   }
 });
 
