@@ -13,7 +13,7 @@ canvas {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-#register-popup-bg, #login-popup-bg {
+#register-popup-bg, #login-popup-bg, #delete-popup-bg{
     visibility: hidden;
     background-color: rgba(0, 0, 0, 0.5);
     width: 100%;
@@ -23,7 +23,7 @@ canvas {
     left: 0;
 }
 
-#register-popup, #login-popup {
+#register-popup, #login-popup, #delete-popup{
     position: absolute;
     left: 50%;
     top: 100px;
@@ -37,16 +37,29 @@ canvas {
     height: 370px;
 }
 
-#login-popup {
+#login-popup, #delete-popup {
     height: 300px;
 }
 
-#register-popup-header, #login-popup-header {
+#register-popup-header, #login-popup-header{
     background-color: #5ec4ff;
     border-radius: 10px 10px 0px 0px;
     height: 50px;
     font-weight: bold;
     font-size: large;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    color: white;
+    position: relative;
+}
+
+#delete-popup-header{
+    background-color: #d11;
+    border-radius: 10px 10px 0px 0px;
+    height: 50px;
+    font-weight: bold;
+    font-size: bold;
     align-items: center;
     justify-content: center;
     display: flex;
@@ -71,11 +84,11 @@ form {
     position: relative;
 }
 
-#register-form {
+#register-form{
     height: 320px;
 }
 
-#login-form {
+#login-form, #delete-form {
     height: 250px;
 }
 
@@ -100,9 +113,27 @@ form > button {
     bottom: 10px;
 }
 
+#delete-form > button {
+    border: none;
+    border-radius: 5px;
+    background-color: #d11;
+    margin-top: 50px;
+    width:380px;
+    height:50px;
+    color:white;
+    font-weight:bold;
+    position:absolute;
+    bottom: 10px;
+}
+
 form > button:hover {
     cursor: pointer;
     background-color: #4eb4ef;
+}
+
+#delete-form > button:hover {
+    cursor: pointer;
+    background-color: #f14141;
 }
 
 #user {
@@ -111,25 +142,37 @@ form > button:hover {
     cursor: pointer;
 }
 
-#account-select {
+#account-select, #account-select-auth {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    width: 80px;
+    width: 130px;
     padding: 5px;
     border-radius: 8px;
     visibility: hidden;
     margin-top: 5px;
 }
 
-#account-select-login, #account-select-register {
+#account-select-login, #account-select-register, #account-select-logout, #account-select-delete {
     padding: 5px;
-    color: #4eb4ef;
     cursor: pointer;
     font-weight: bold;
     border-radius: 5px;
 }
 
-#account-select-login:hover, #account-select-register:hover {
+#account-select-login, #account-select-register, #account-select-logout {
+    color: #4eb4ef;
+}
+
+#account-select-delete {
+    color: #d11;
+}
+
+#account-select-login:hover, #account-select-register:hover, #account-select-logout:hover {
     background-color: #4eb4ef;
+    color: white;
+}
+
+#account-select-delete:hover {
+    background-color: #d11;
     color: white;
 }
 

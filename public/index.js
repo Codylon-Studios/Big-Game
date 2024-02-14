@@ -11,28 +11,92 @@ socket.on('updtplayer', (accounts) =>{
     console.log(accounts);
 })
 
+//clicking on user icon
 document.getElementById("user").addEventListener("click", () => {
-    document.getElementById("account-select").style.visibility = "visible";
+    $.get('/auth', (data) => {
+        if (data.authenticated) {
+            document.getElementById("account-select-auth").style.visibility = "visible";
+            document.getElementById("account-select-auth").style.position = "absolute";
+            const userIconRect = document.getElementById("user").getBoundingClientRect();
+            document.getElementById("account-select-auth").style.top = `${userIconRect.bottom}px`;
+            document.getElementById("account-select-auth").style.left = `${userIconRect.left}px`;
+            document.getElementById("account-select").style.visibility = "hidden";
+            
+            // Prevent clicks on account-select-auth from reaching elements underneath
+            document.getElementById("account-select-auth").addEventListener("click", (event) => {
+                event.stopPropagation();
+            });
+        } else {
+            document.getElementById("account-select").style.visibility = "visible";
+            document.getElementById("account-select-auth").style.visibility = "hidden";
+        }
+    });
 });
 
+// hides the dropdown if the user doesn't click on the icon
 window.addEventListener("click", (ev) => {
-    if (ev.target != document.getElementById("user")) { // hides the dropdown if the user doesn't click on the icon
+    if (ev.target != document.getElementById("user")) {
         document.getElementById("account-select").style.visibility = "hidden";
+        document.getElementById("account-select-auth").style.visibility = "hidden";
     }
 });
 
+//clicking on dropdown login
 document.getElementById("account-select-login").addEventListener("click", () => {
     document.getElementById("login-popup-bg").style.visibility = "visible";
+    document.getElementById("account-select").style.visibility = "hidden";
 });
-
+//clicking on dropdown register
 document.getElementById("account-select-register").addEventListener("click", () => {
     document.getElementById("register-popup-bg").style.visibility = "visible";
+    document.getElementById("account-select").style.visibility = "hidden";
 });
+//clicking on dropdown logout
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Find the logout button element
+    const logoutButton = document.getElementById('account-select-logout');
+  
+    // Add event listener to the logout button
+    logoutButton.addEventListener('click', async () => {
+      try {
+        // Send a POST request to the server's logout endpoint
+        const response = await fetch('/logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+  
+        // Check if the logout was successful
+        if (response.ok) {
+          console.log('Logout successful');
+          document.getElementById("account-select-auth").style.visibility = "hidden";
+        } else {
+          console.error('Logout failed');
+          document.getElementById("account-select-auth").style.visibility = "hidden";
+        }
+      } catch (error) {
+        console.error('Error during logout:', error);
+        document.getElementById("account-select-auth").style.visibility = "hidden";
+      }
+    });
+  });
+
+
+//clicking on dropdown delete account
+document.getElementById("account-select-delete").addEventListener("click", () => {
+    document.getElementById("delete-popup-bg").style.visibility = "visible";
+    document.getElementById("account-select-auth").style.visibility = "hidden";
+    console.log("delete account");
+});
+
 
 document.querySelectorAll(".popup-close").forEach((element) => {
     element.addEventListener("click", () => {
         document.getElementById("login-popup-bg").style.visibility = "hidden";
         document.getElementById("register-popup-bg").style.visibility = "hidden";
+        document.getElementById("delete-popup-bg").style.visibility = "hidden";
     });
 })
 
@@ -128,3 +192,24 @@ document.getElementById("register-form").addEventListener("submit", (ev) => {
         }
     }, 5000);
 });
+
+
+document.getElementById("delete-form").addEventListener("submit", (ev) => {
+    // Send request to server
+    ev.preventDefault();
+    let url = "/delete";
+    let data = {username: document.getElementById("delete-username").value,
+                password: document.getElementById("delete-password").value
+               };
+    $.post(url, data, function (result, status) {
+        // Handle result
+        if (result == "0") {
+            document.getElementById("delete-popup-bg").style.visibility = "hidden";
+            document.querySelectorAll("#delete-form > .account-error")[0].style.display = "none";
+        }
+        else {
+            document.querySelectorAll("#delete-form > .account-error")[0].style.display = "block";
+        }
+    });
+});
+  

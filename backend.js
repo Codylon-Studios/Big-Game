@@ -6,9 +6,12 @@
 //
 // Import necessary modules: express, http server, socket.io, pg and bcrypt
 const express = require('express');
+const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
 const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
+const fs = require('fs');
 const { Pool } = require('pg');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
@@ -19,15 +22,20 @@ const saltRounds = 10;
 // Create an HTTP server using Express
 const server = createServer(app);
 // Initialize Socket.io for real-time communication
-const io = new Server(server);
-//Create a PostgreSQL connection pool
-const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'accounts',
-  password: 'postgres',
-  port: 5432,
+const io = new Server(server, {
+  cookie: {
+    name: "io",
+    path: "/",
+    httpOnly: true,
+    sameSite: "lax"
+  }
 });
+//Create a PostgreSQL connection pool
+const dbConfig = JSON.parse(fs.readFileSync('db_config.json'));
+
+const pool = new Pool(dbConfig);
+// Make `pool` available to other parts of your application as needed
+module.exports = pool;
 // Store session IDs
 const accounts = {};
 
@@ -63,6 +71,11 @@ server.listen(3000, () => {
 app.use(bodyParser.urlencoded({ extended: true }));
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
+app.use(session({
+  secret: 'your_secret_here',
+  resave: false,
+  saveUninitialized: true,
+}));
 
 //
 //APP.GET
@@ -71,56 +84,32 @@ app.use(express.static('public'));
 app.get('/',(req,res)=>{
   res.sendFile(join(__dirname + '/public/index.html'))
 });
-
-app.get('/@/:username', function(req, res) {
-  const username = req.params.username;
-  res.send(`Welcome to the profile page of ${username}`);
+// Add a new route to check if the user is authenticated
+app.get('/auth', (req, res) => {
+  if (req.session.user) {
+    res.json({ authenticated: true, user: req.session.user });
+  } else {
+    res.json({ authenticated: false });
+  }
 });
 
 
 //
-//APP.POST
+//POST
 //
-
+// Handle POST request to /logout route
+app.post('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      res.status(500).send('Internal server error');
+    } else {
+      res.status(200).send('Logout successful');
+    }
+  });
+});
 // Handle POST request to root route (for deleting user)(original)
 app.post('/', async (req, res) => {
-  /*const { deleteUsername, deletePassword } = req.body;
-
-  try {
-    // Connect to the PostgreSQL database
-    const client = await pool.connect();
-
-    // Query the database to retrieve the user with the given username
-    const result = await client.query('SELECT * FROM accounts WHERE username = $1', [deleteUsername]);
-
-    // If no user found with the given username, respond with error message
-    if (result.rows.length === 0) {
-      res.status(404).send('User not found');
-      return;
-    }
-
-    // Get the user data from the query result
-    const user = result.rows[0];
-
-    // Compare the provided password with the hashed password stored in the database
-    const match = await bcrypt.compare(deletePassword, user.password);
-
-    // If passwords match, delete the user from the database and respond with success message
-    if (match) {
-      await client.query('DELETE FROM accounts WHERE username = $1', [deleteUsername]);
-      res.status(200).send('User deleted successfully');
-    } else {
-      // If passwords don't match, respond with error message
-      res.status(401).send('Invalid username or password');
-    }
-
-    // Release the client connection
-    client.release();
-  } catch (error) {
-    // If an error occurs, log it and respond with internal server error message
-    console.error('Error deleting user:', error);
-    res.status(500).send('Internal server error');
-  }*/
 });
 
 // Handle POST request to /register route
@@ -144,22 +133,21 @@ app.post('/register', async (req, res) => {
   try {
     // Connect to the PostgreSQL database
     const client = await pool.connect();
-    
     // Hash the password before storing it in the database
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-
     // Check if username is already in use
     let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
     if (result.rows.length != 0) {
       errors.push("3")
     }
-    else if (errors.length == 0) {
+    else if (errors.length === 0) {
       // Insert a new row into the accounts table with the provided username and hashed password
       await client.query('INSERT INTO accounts (username, password) VALUES ($1, $2)', [username, hashedPassword]);
       //Inserts current socketid
       const sessionid = req.socket.id;
       await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
       client.release();
+      req.session.user = { username };
       res.status(200).send("0");
       return
     }
@@ -184,33 +172,78 @@ app.post('/login', async (req, res) => {
   try {
     // Connect to the PostgreSQL database
     const client = await pool.connect();
-
     // Query the database to retrieve the user with the given username
     let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
-
     // If no user found with the given username, give error
     if (result.rows.length === 0) {
-      res.status(200).send("2");
-      return
+      res.status(200).send("1");
+      return;
     }
-
-    // Release the client connection
-    client.release();
-
     // Get the user data from the query result
     const user = result.rows[0];
-
+    // Release the client connection
+    client.release();
     // Compare the provided password with the hashed password stored in the database
     const match = await bcrypt.compare(password, user.password);
-
     // If passwords match, update the session ID in the database and respond with success message
     if (match) {
       const sessionid = req.socket.id;
       await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
+      req.session.user = { username };
       res.status(200).send("0");
     } else {
       // If passwords don't match, respond with error message
-      res.status(200).send("2");
+      res.status(200).send("1");
+      return;
+    }
+  } catch (error) {
+    // If an error occurs, log it and respond with internal server error message
+    console.error('Error authenticating user:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+
+// Handle POST request to /delete route
+app.post('/delete', async (req, res) => {
+  /* Result codes:
+    0: Deletion successful
+    1: Incorrect username or password
+  */
+  const { username, password } = req.body;
+
+  try {
+    // Connect to the PostgreSQL database
+    const client = await pool.connect();
+    // Query the database to retrieve the user with the given username
+    const result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
+    // Release the client connection
+    client.release();
+    // If no user found with the given username, give error
+    if (result.rows.length === 0) {
+      res.status(200).send("1");
+      return;
+    }
+    // Get the user data from the query result
+    const user = result.rows[0];
+    // Compare the provided password with the hashed password stored in the database
+    const match = await bcrypt.compare(password, user.password);
+    // If passwords match, delete the account and respond with success message
+    if (match) {
+      await pool.query('DELETE FROM accounts WHERE username = $1', [username]);
+      req.session.destroy((err) => {
+        if (err) {
+          console.error('Error destroying session:', err);
+          res.status(500).send('Internal server error');
+        } else {
+          res.status(200).send("0");
+        }
+      });
+      return;
+    } else {
+      // If passwords don't match, respond with error message
+      res.status(200).send("1");
+      return;
     }
   } catch (error) {
     // If an error occurs, log it and respond with internal server error message
