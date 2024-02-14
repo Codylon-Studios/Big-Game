@@ -71,17 +71,28 @@ server.listen(3000, () => {
 app.use(bodyParser.urlencoded({ extended: true }));
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
+
 app.use(session({
-  secret: 'your_secret_here',
+  store: new pgSession({
+    pool : pool,                // Connection pool
+    tableName : 'user_sessions'   // Use another table-name than the default "session" one
+    // Insert connect-pg-simple options here
+  }),
+  secret: process.env.FOO_COOKIE_SECRET,
   resave: false,
   saveUninitialized: true,
+  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, // 30 days
+  name: 'sessionid',
+  // Insert express-session options here
 }));
 
 //
 //APP.GET
 //
 //Serve index.html when root URL is accessed
-app.get('/',(req,res)=>{
+app.get('/',(req,res, next)=>{
+  req.session.foo = 'foo'
+  console.log(req)
   res.sendFile(join(__dirname + '/public/index.html'))
 });
 // Add a new route to check if the user is authenticated
