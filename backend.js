@@ -63,7 +63,7 @@ const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, // 30 days
+  cookie: { maxAge: 10 * 24 * 60 * 60 * 1000 }, // 30 days
   name: 'sessionid',
   // Insert express-session options here
 });
@@ -139,19 +139,39 @@ app.get('/auth', (req, res) => {
 app.post('/', async (req, res) => {
 });
 // Handle POST request to /logout route
-app.post('/logout', (req, res) => {
+app.post('/logout', async (req, res) => {
   /* Result codes:
-    0: Registration successful
+    0: Logout successful
     1: Internal server error
   */
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Error destroying session:', err);
-      res.status(200).send('1');
-    } else {
-      res.status(200).send('0');
-    }
-  });
+  try {
+    const username = req.session.user.username;
+
+    // Connect to the PostgreSQL database
+    const client = await pool.connect();
+    // Update the sessionid to null for the user
+    await client.query('UPDATE accounts SET sessionid = NULL WHERE username = $1', [username]);
+    // Release the client connection
+    client.release();
+
+    // Clear the session ID from the user's session data
+    delete req.session.user.sessionid;
+
+    // Destroy the session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Error destroying session:', err);
+        res.status(200).send('1');
+      } else {
+        // Send success response
+        res.status(200).send('0');
+      }
+    });
+  } catch (error) {
+    // If an error occurs, log it and respond with internal server error message
+    console.error('Error logging out:', error);
+    res.status(200).send('1');
+  }
 });
 
 // Handle POST request to /register route
@@ -274,7 +294,7 @@ app.post('/login', async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     // If passwords match, update the session ID in the database and respond with success message
     if (match) {
-      const sessionid = req.socket.id;
+      const sessionid = req.sessionID;
       await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
       req.session.user = { username };
       res.status(200).send("0");

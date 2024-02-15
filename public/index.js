@@ -15,11 +15,13 @@ socket.on('updtplayer', (accounts) =>{
 document.getElementById("user").addEventListener("click", () => {
     $.get('/auth', (data) => {
         if (data.authenticated) {
+            console.log("auth");
             document.getElementById("account-select-login").style.display = "none";
             document.getElementById("account-select-register").style.display = "none";
             document.getElementById("account-select-logout").style.display = "block";
             document.getElementById("account-select-delete").style.display = "block";
         } else {
+            console.log("not auth");
             document.getElementById("account-select-login").style.display = "block";
             document.getElementById("account-select-register").style.display = "block";
             document.getElementById("account-select-logout").style.display = "none";
