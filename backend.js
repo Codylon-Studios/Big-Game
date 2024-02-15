@@ -319,7 +319,8 @@ app.post('/delete', async (req, res) => {
     1: Internal server error
     2: Incorrect username or password
   */
-  const { username, password } = req.body;
+  const username = req.session.user;
+  const password = req.body.password;
 
   try {
     // Connect to the PostgreSQL database
