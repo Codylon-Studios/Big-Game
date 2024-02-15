@@ -10,16 +10,38 @@ canvas {
 
 #sidebar {
     height: 800px;
-    width: 400px;
-    background-color: rgb(230, 230, 230);
+    width: 300px;
+    background-color: #eee;
     border-radius: 0px 10px 10px 0px;
     position: relative;
+}
+
+.playerbox, .timer, .moves {
+    width: 300px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.playerbox {
+    height: 250px;
+    background-color: #ddd;
+}
+
+.timer {
+    height: 50px;
+    background-color: #ccc;
+}
+
+.moves {
+    height: 200px;
+    background-color: #bbb;
 }
 
 #game {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     height: 800px;
-    width: 1200px;
+    width: 1100px;
     left: 50%;
     top: 60px;
     transform: translateX(-50%);
