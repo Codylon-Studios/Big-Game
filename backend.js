@@ -5,6 +5,7 @@
 //DON'T TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING
 //
 // Import necessary modules: express, http server, socket.io, pg and bcrypt
+const cors = require('cors');
 const dotenv = require('dotenv');
 const express = require('express');
 const session = require('express-session');
@@ -19,6 +20,7 @@ const bcrypt = require('bcrypt');
 const app = express();
 // Define saltRounds for bcrypt hashing
 const saltRounds = 10;
+app.use(cors());
 // Create an HTTP server using Express
 const server = createServer(app);
 // Initialize Socket.io for real-time communication
@@ -28,7 +30,7 @@ const io = require('socket.io')(server, {
       methods: ["GET", "POST"],
       transports: ['websocket', 'polling'],
       allowedHeaders: ['Access-Control-Allow-Origin'],
-      credentials: false
+      credentials: true
 
   },
   allowEIO3: true,
@@ -82,6 +84,13 @@ app.use(express.static('public'));
 
 //Share session context with Socket.IO
 io.engine.use(sessionMiddleware);
+
+io.engine.on("connection_error", (err) => {
+  console.log(err.req);      // the request object
+  console.log(err.code);     // the error code, for example 1
+  console.log(err.message);  // the error message, for example "Session ID unknown"
+  console.log(err.context);  // some additional error context
+});
 
 //
 //CONNECTION
