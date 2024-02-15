@@ -65,7 +65,7 @@ const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 10 * 24 * 60 * 60 * 1000 }, // 30 days
+  cookie: { maxAge: 10 * 24 * 60 * 60 * 1000 }, // 10 days
   name: 'sessionid',
 });
 // Make `pool` available to other parts of the application as needed
