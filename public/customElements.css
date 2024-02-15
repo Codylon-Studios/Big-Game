@@ -77,10 +77,10 @@
     stroke: #500;
 }
 
-.notification-box-main-gray > svg > g {
+.notification-box-main-blue > svg > g {
     stroke: #259;
 }
 
-.notification-box-main-gray > svg:hover > g {
+.notification-box-main-blue > svg:hover > g {
     stroke: #025;
 }

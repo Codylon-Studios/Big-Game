@@ -11,7 +11,6 @@ const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const { createServer } = require('node:http');
 const { join } = require('node:path');
-const { Server } = require('socket.io');
 const fs = require('fs');
 const { Pool } = require('pg');
 const bodyParser = require('body-parser');
@@ -28,11 +27,23 @@ const io = require('socket.io')(server, {
       origin: "http://localhost:3000",
       methods: ["GET", "POST"],
       transports: ['websocket', 'polling'],
-      credentials: true
+      allowedHeaders: ['Access-Control-Allow-Origin'],
+      credentials: false
+
   },
-  allowEIO3: true
+  allowEIO3: true,
+  cookie: {
+    name: "io",
+    path: "/",
+    httpOnly: true,
+    sameSite: "lax"
+  }
 });
 io.attach(server);
+// Listen for connections on port 3000
+server.listen(3000, () => {
+  console.log('server running at http://localhost:3000');
+});
 //Create a PostgreSQL connection pool
 const dbConfig = JSON.parse(fs.readFileSync('db_config.json'));
 // Load environment variables from .env file
@@ -43,7 +54,8 @@ const pool = new Pool(dbConfig);
 const sessionMiddleware = session({
   store: new pgSession({
     pool : pool,                // Connection pool
-    tableName : 'accounts'   // Use another table-name than the default "session" one
+    tableName : 'session',
+    createTableIfMissing: true,   // Use another table-name than the default "session" one
     // Insert connect-pg-simple options here
   }),
   secret: process.env.SESSION_SECRET,
@@ -55,10 +67,21 @@ const sessionMiddleware = session({
 });
 // Make `pool` available to other parts of the application as needed
 module.exports = pool;
-//Share session context with Socket.IO
-io.engine.use(sessionMiddleware);
 // Store session IDs
 const accounts = {};
+
+//
+//APP.USE
+//
+//Create new session
+app.use(sessionMiddleware);
+// Set up body-parser middleware to parse request bodies
+app.use(bodyParser.urlencoded({ extended: true }));
+// Serve static files from the 'public' directory
+app.use(express.static('public'));
+
+//Share session context with Socket.IO
+io.engine.use(sessionMiddleware);
 
 //
 //CONNECTION
@@ -81,20 +104,6 @@ io.on('connection', (socket) => {
   });
 });
 
-// Listen for connections on port 3000
-server.listen(3000, () => {
-  console.log('server running at http://localhost:3000');
-});
-
-//
-//APP.USE
-//
-// Set up body-parser middleware to parse request bodies
-app.use(bodyParser.urlencoded({ extended: true }));
-// Serve static files from the 'public' directory
-app.use(express.static('public'));
-//Create new session
-app.use(sessionMiddleware);
 
 //
 //APP.GET
@@ -117,6 +126,9 @@ app.get('/auth', (req, res) => {
 //
 //POST
 //
+// Handle POST request to root route (for deleting user)(original)
+app.post('/', async (req, res) => {
+});
 // Handle POST request to /logout route
 app.post('/logout', (req, res) => {
   /* Result codes:
@@ -131,9 +143,6 @@ app.post('/logout', (req, res) => {
       res.status(200).send('0');
     }
   });
-});
-// Handle POST request to root route (for deleting user)(original)
-app.post('/', async (req, res) => {
 });
 
 // Handle POST request to /register route
