@@ -4,7 +4,9 @@
 //
 //DON'T TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING
 //
-// Import necessary modules: express, http server, socket.io, pg and bcrypt
+//Installing manual: https://flint-zenith-b13.notion.site/424c21ffbb5648f4b674cb9a1472c43a?v=8377e7b70ae842dc91e2261c80e4ac75
+// Copyright (c) 2024 Codylon Studios
+// Import necessary modules: express, http server, socket.io, pg and bcrypt, cors, dotenv, connect-pg-simple, fs
 const cors = require('cors');
 const dotenv = require('dotenv');
 const express = require('express');
@@ -25,14 +27,14 @@ app.use(cors());
 const server = createServer(app);
 // Initialize Socket.io for real-time communication
 const io = require('socket.io')(server, {
+  //Setup CORS
   cors: {
       origin: "http://localhost:3000",
       methods: ["GET", "POST"],
       transports: ['websocket', 'polling'],
       allowedHeaders: ['Access-Control-Allow-Origin'],
       credentials: true
-
-  },
+    },
   allowEIO3: true,
   cookie: {
     name: "io",
@@ -55,9 +57,9 @@ const pool = new Pool(dbConfig);
 //Create new session
 const sessionMiddleware = session({
   store: new pgSession({
-    pool : pool,                // Connection pool
+    pool : pool, 
     tableName : 'session',
-    createTableIfMissing: true,   // Use another table-name than the default "session" one
+    createTableIfMissing: true,
     // Insert connect-pg-simple options here
   }),
   secret: process.env.SESSION_SECRET,
@@ -65,7 +67,6 @@ const sessionMiddleware = session({
   saveUninitialized: true,
   cookie: { maxAge: 10 * 24 * 60 * 60 * 1000 }, // 30 days
   name: 'sessionid',
-  // Insert express-session options here
 });
 // Make `pool` available to other parts of the application as needed
 module.exports = pool;
