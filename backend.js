@@ -4,7 +4,9 @@
 //
 //DON'T TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING
 //
-// Import necessary modules: express, http server, socket.io, pg and bcrypt
+//Installing manual: https://flint-zenith-b13.notion.site/424c21ffbb5648f4b674cb9a1472c43a?v=8377e7b70ae842dc91e2261c80e4ac75
+// Copyright (c) 2024 Codylon Studios
+// Import necessary modules: express, http server, socket.io, pg and bcrypt, cors, dotenv, connect-pg-simple, fs
 const cors = require('cors');
 const dotenv = require('dotenv');
 const express = require('express');
@@ -25,14 +27,14 @@ app.use(cors());
 const server = createServer(app);
 // Initialize Socket.io for real-time communication
 const io = require('socket.io')(server, {
+  //Setup CORS
   cors: {
       origin: "http://localhost:3000",
       methods: ["GET", "POST"],
       transports: ['websocket', 'polling'],
       allowedHeaders: ['Access-Control-Allow-Origin'],
       credentials: true
-
-  },
+    },
   allowEIO3: true,
   cookie: {
     name: "io",
@@ -55,17 +57,16 @@ const pool = new Pool(dbConfig);
 //Create new session
 const sessionMiddleware = session({
   store: new pgSession({
-    pool : pool,                // Connection pool
+    pool : pool, 
     tableName : 'session',
-    createTableIfMissing: true,   // Use another table-name than the default "session" one
+    createTableIfMissing: true,
     // Insert connect-pg-simple options here
   }),
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, // 30 days
+  cookie: { maxAge: 10 * 24 * 60 * 60 * 1000 }, // 10 days
   name: 'sessionid',
-  // Insert express-session options here
 });
 // Make `pool` available to other parts of the application as needed
 module.exports = pool;
@@ -139,19 +140,39 @@ app.get('/auth', (req, res) => {
 app.post('/', async (req, res) => {
 });
 // Handle POST request to /logout route
-app.post('/logout', (req, res) => {
+app.post('/logout', async (req, res) => {
   /* Result codes:
-    0: Registration successful
+    0: Logout successful
     1: Internal server error
   */
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Error destroying session:', err);
-      res.status(200).send('1');
-    } else {
-      res.status(200).send('0');
-    }
-  });
+  try {
+    const username = req.session.user.username;
+
+    // Connect to the PostgreSQL database
+    const client = await pool.connect();
+    // Update the sessionid to null for the user
+    await client.query('UPDATE accounts SET sessionid = NULL WHERE username = $1', [username]);
+    // Release the client connection
+    client.release();
+
+    // Clear the session ID from the user's session data
+    delete req.session.user.sessionid;
+
+    // Destroy the session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Error destroying session:', err);
+        res.status(200).send('1');
+      } else {
+        // Send success response
+        res.status(200).send('0');
+      }
+    });
+  } catch (error) {
+    // If an error occurs, log it and respond with internal server error message
+    console.error('Error logging out:', error);
+    res.status(200).send('1');
+  }
 });
 
 // Handle POST request to /register route
@@ -274,7 +295,7 @@ app.post('/login', async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     // If passwords match, update the session ID in the database and respond with success message
     if (match) {
-      const sessionid = req.socket.id;
+      const sessionid = req.sessionID;
       await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
       req.session.user = { username };
       res.status(200).send("0");
