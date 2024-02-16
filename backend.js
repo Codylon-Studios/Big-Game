@@ -318,8 +318,8 @@ app.post('/delete', async (req, res) => {
     0: Deletion successful
     1: Internal server error
     2: Incorrect username or password
-  */
-  const username = req.session.user;
+  */r
+  const username = req.body.username;
   const password = req.body.password;
 
   try {
