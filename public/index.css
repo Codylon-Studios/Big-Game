@@ -59,17 +59,20 @@ canvas {
     position: relative;
 }
 
-.playerbox, .timer, .moves {
+.playerbox, .timer, .moves-chat {
     width: 300px;
     align-items: center;
     justify-content: center;
-    display: flex;
     box-sizing: border-box;
     background-color: #b86;
     border: 5px solid #754;
     position: relative;
     color: #754;
     font-weight: 900;
+}
+
+.playerbox, .timer {
+    display: flex;
 }
 
 .playerbox {
@@ -100,9 +103,36 @@ canvas {
     margin-top: -2px;
 }
 
-.moves {
+.moves-chat {
     height: 200px;
     border-width: 0px 5px;
+}
+
+.moves-chat-select {
+    display: flex;
+}
+
+.moves-chat-select-moves, .moves-chat-select-chat {
+    width: 50%;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    cursor: pointer;
+    background-color: #a75;
+    color: #ddd;
+}
+
+.moves-chat-select-moves:hover, .moves-chat-select-chat:hover {
+    background-color: #964;
+}
+
+.moves, .chat {
+    height: 170px;
+}
+
+.chat {
+    display: none;
 }
 
 #register-popup-bg, #login-popup-bg, #delete-popup-bg{

@@ -224,3 +224,13 @@ document.getElementById("delete-form").addEventListener("submit", (ev) => {
         }
     });
 });
+
+document.querySelector(".moves-chat-select-moves").addEventListener("click", () => {
+    document.querySelector(".chat").style.display = "none";
+    document.querySelector(".moves").style.display = "block";
+});
+
+document.querySelector(".moves-chat-select-chat").addEventListener("click", () => {
+    document.querySelector(".chat").style.display = "block";
+    document.querySelector(".moves").style.display = "none";
+});
