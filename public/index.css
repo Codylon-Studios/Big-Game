@@ -113,7 +113,7 @@ canvas {
 }
 
 .moves-chat-select-moves, .moves-chat-select-chat {
-    width: 50%;
+    width: 150px;
     height: 30px;
     align-items: center;
     justify-content: center;
@@ -127,12 +127,28 @@ canvas {
     background-color: #964;
 }
 
-.moves, .chat {
-    height: 170px;
-}
-
 .chat {
     display: none;
+}
+
+.moves {
+    display: flex;
+    overflow: scroll;
+    scrollbar-color: #775544 transparent;
+}
+
+.moves-number, .moves-first, .moves-second {
+    height: 170px;
+    justify-content: center;
+    display: flex;
+}
+
+.moves-number {
+    width: 40px;
+}
+
+.moves-first, .moves-second {
+    width: 130px;
 }
 
 #register-popup-bg, #login-popup-bg, #delete-popup-bg{
