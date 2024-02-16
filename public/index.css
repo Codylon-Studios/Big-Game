@@ -56,6 +56,13 @@ canvas {
     border-width: 0px 5px;
 }
 
+.timer span {
+    margin-left: 5px;
+    letter-spacing: 1px;
+    font-size: 24px;
+    margin-top: -2px;
+}
+
 .moves {
     height: 200px;
 }
