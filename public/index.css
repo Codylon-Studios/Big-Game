@@ -2,10 +2,42 @@ body {
     font-family: "Cantarell", sans-serif;
 }
 
+#game {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    height: 900px;
+    width: 1100px;
+    left: 50%;
+    top: 60px;
+    transform: translateX(-50%);
+    position: absolute;
+    border-radius: 10px;
+}
+
+#topbar, #bottombar {
+    width: 1100px;
+    height: 50px;
+    box-sizing: border-box;
+    background-color: #b86;
+    border: 5px solid #754;
+    display: flex;
+    align-items: center;
+}
+
+#topbar {
+    border-radius: 10px 10px 0px 0px;
+}
+
+#bottombar {
+    border-radius: 0px 0px 10px 10px;
+}
+
+#wrapper-canvas-sidebar {
+    display: flex;
+}
+
 canvas {
     height: 800px;
     width: 800px;
-    border-radius: 10px 0px 0px 10px;
 }
 
 #sidebar {
@@ -30,14 +62,7 @@ canvas {
 
 .playerbox {
     height: 250px;
-}
-
-.playerbox-1 {
-    border-radius: 0px 10px 0px 0px;
-}
-
-.playerbox-2 {
-    border-radius: 0px 0px 10px 0px;
+    border-width: 0px 5px;
 }
 
 .playerbox img {
@@ -53,7 +78,7 @@ canvas {
 
 .timer {
     height: 50px;
-    border-width: 0px 5px;
+    border-width: 5px;
 }
 
 .timer span {
@@ -65,20 +90,8 @@ canvas {
 
 .moves {
     height: 200px;
+    border-width: 0px 5px;
 }
-
-#game {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    height: 800px;
-    width: 1100px;
-    left: 50%;
-    top: 60px;
-    transform: translateX(-50%);
-    position: absolute;
-    border-radius: 10px;
-    display: flex;
-}
-
 
 #register-popup-bg, #login-popup-bg, #delete-popup-bg{
     visibility: hidden;
