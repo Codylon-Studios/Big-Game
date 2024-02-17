@@ -85,10 +85,30 @@ canvas {
     top: 30px;
 }
 
-.playerbox span {
+.playerinfo {
     position: absolute;
     top: 150px;
     text-align: center;
+}
+
+.stats-show {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+
+.stats-show span {
+    text-decoration: 2px solid underline;
+}
+
+.stats-show i {
+    font-size: 20px;
+    margin-right: 5px;
+    transition: 0.05s;
+}
+
+.stats {
+    display: none;
 }
 
 .timer {
