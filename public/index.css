@@ -76,18 +76,18 @@ canvas {
 }
 
 .playerbox {
-    height: 250px;
+    height: 230px;
     border-width: 0px 5px;
 }
 
 .playerbox img {
     position: absolute;
-    top: 30px;
+    top: 20px;
 }
 
 .playerinfo {
     position: absolute;
-    top: 150px;
+    top: 140px;
     text-align: center;
 }
 
@@ -112,15 +112,14 @@ canvas {
 }
 
 .timer {
-    height: 50px;
+    height: 70px;
     border-width: 5px;
 }
 
 .timer span {
     margin-left: 5px;
     letter-spacing: 1px;
-    font-size: 24px;
-    margin-top: -2px;
+    font-size: 44px;
 }
 
 .moves-chat {
