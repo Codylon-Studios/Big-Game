@@ -121,6 +121,11 @@ canvas {
     cursor: pointer;
     background-color: #a75;
     color: #ddd;
+    border-bottom: 2px solid #754;
+}
+
+.moves-chat-select-moves {
+    border-right: 2px solid #754;
 }
 
 .moves-chat-select-moves:hover, .moves-chat-select-chat:hover {
@@ -134,7 +139,7 @@ canvas {
 .moves {
     display: flex;
     overflow: scroll;
-    scrollbar-color: #775544 transparent;
+    scrollbar-color: #754 transparent;
 }
 
 .moves-number, .moves-first, .moves-second {
@@ -149,6 +154,65 @@ canvas {
 
 .moves-first, .moves-second {
     width: 130px;
+}
+
+.messages {
+    height: 140px;
+    overflow: scroll;
+    scrollbar-color: #754 transparent;
+}
+
+.message {
+    display: flex;
+    margin: 7px 10px 7px 3px;
+}
+
+.message img {
+    margin: 5px 3px;
+}
+
+.message span {
+    background-color: #a75;
+    height: fit-content;
+    padding: 3px;
+    border-radius: 5px;
+    border: 2px solid #754;
+}
+
+.new-message {
+    width: 290px;
+    height: 26px;
+    background-color: #a75;
+    display: flex;
+    border-top: 2px solid #754;
+    position: relative;
+}
+
+.new-message-input {
+    width: 254px;
+    margin: 2px;
+    color: #754;
+    border: 2px solid #754;
+    border-radius: 5px;
+    outline: none;
+    background-color: #b86;
+    font-weight: 900;
+}
+
+.new-message-input::placeholder {
+    opacity: 1;
+}
+
+.new-message-send {
+    cursor: pointer;
+    background-color: #754;
+    padding: 3px;
+    height: fit-content;
+    color: #ddd;
+    border-radius: 5px;
+    position: absolute;
+    top: 2px;
+    right: 2px;
 }
 
 #register-popup-bg, #login-popup-bg, #delete-popup-bg{
