@@ -1,8 +1,6 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 const socket = io();
-canvas.width = 600
-canvas.height = 700
 c.fillStyle = "#ff9966"
 c.fillRect(0, 0, 200, 300)
 console.log("I'm working");
@@ -224,5 +222,28 @@ document.getElementById("delete-form").addEventListener("submit", (ev) => {
         else {
             document.querySelectorAll("#delete-form > .account-error")[0].style.display = "block";
         }
+    });
+});
+
+document.querySelector(".moves-chat-select-moves").addEventListener("click", () => {
+    document.querySelector(".chat").style.display = "none";
+    document.querySelector(".moves").style.display = "flex";
+});
+
+document.querySelector(".moves-chat-select-chat").addEventListener("click", () => {
+    document.querySelector(".chat").style.display = "block";
+    document.querySelector(".moves").style.display = "none";
+});
+
+document.querySelectorAll(".playerbox .stats-show").forEach((element) => {
+    element.addEventListener("click", () => {
+        if (element.children[0].style.transform == "rotate(90deg) translateX(2px)") {
+            element.children[0].style.transform = "";
+            element.nextElementSibling.style.display = "none";
+        }
+        else {
+            element.children[0].style.transform = "rotate(90deg) translateX(2px)";
+            element.nextElementSibling.style.display = "block";
+        };
     });
 });

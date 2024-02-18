@@ -8,9 +8,111 @@
     <link rel="stylesheet" href="customElements.css">
 </head>
 <body>
-    <!--Include Canvas with id = myCanvas-->
-    <canvas id="myCanvas" width="600" height="800"></canvas>
-    
+    <!--Game-->
+    <div id="game">
+        <div id="topbar">
+            <img src="images/placeholders/player-2.svg" width="30" height="30" alt="Opponent"></img>
+            best_example_username
+            (<a href="/profile/best_example_username">view profile</a>)
+            <img src="images/placeholders/guild-2.svg" width="35" height="35" alt="Opponent's guild"></img>
+            coolest_guild_ever
+            (<a href="/guild/coolest_guild_ever">view guild</a>)
+        </div>
+        <div id="wrapper-canvas-sidebar">
+            <!--Include Canvas with id "myCanvas"-->
+            <canvas id="myCanvas" width="800" height="800"></canvas>
+            <div id="sidebar">
+                <div class="playerbox playerbox-opponent">
+                    <img src="images/placeholders/player-2.svg" width="100" height="100" alt="Opponent"></img>
+                    <div class="playerinfo">
+                        <div class="playername">best_example_username</div>
+                        <div class="stats-show">
+                            <i class="fa fa-caret-right"></i>
+                            <span>Show stats</span>
+                        </div>
+                        <div class="stats">
+                            Games won: 14<br>Win-Loss-Ratio: 2
+                        </div>
+                    </div>
+                </div>
+                <div class="timer">
+                    Time left:
+                    <span>00:00</span>
+                </div>
+                <div class="moves-chat">
+                    <div class="moves-chat-select">
+                        <div class="moves-chat-select-moves">
+                            Moves
+                        </div>
+                        <div class="moves-chat-select-chat">
+                            Chat
+                        </div>
+                    </div>
+                    <div class="moves">
+                        <div class="moves-number">
+                            1.<br>2.<br>3.<br>4.<br>5.<br>6.<br>7.<br>8.<br>9.<br>10.
+                        </div>
+                        <div class="moves-first">
+                            e4<br>Sf3<br>Lb5<br>La4<br>0-0<br>Te1<br>Lb3<br>c3<br>h3<br>Lc2
+                        </div>
+                        <div class="moves-second">
+                            e5<br>Sc6<br>a6<br>Sf6<br>Le7<br>b5<br>d6<br>0-0<br>Sa5<br>c5
+                        </div>
+                    </div>
+                    <div class="chat">
+                        <div class="messages">
+                            <div class="message">
+                                <img src="images/placeholders/player-1.svg" width="20" height="20" alt="You"></img>
+                                <span>Hi, how are you?</span>
+                            </div>
+                            <div class="message">
+                                <img src="images/placeholders/player-2.svg" width="20" height="20" alt="You"></img>
+                                <span>I'm fine. You're going to win, aren't you?</span>
+                            </div>
+                            <div class="message">
+                                <img src="images/placeholders/player-1.svg" width="20" height="20" alt="You"></img>
+                                <span>Yes... But you'll get better if you practise!</span>
+                            </div>
+                            <div class="message">
+                                <img src="images/placeholders/player-2.svg" width="20" height="20" alt="You"></img>
+                                <span>Ok, thanks!</span>
+                            </div>
+                        </div>
+                        <div class="new-message">
+                            <input type="text" placeholder="Write a new message..." class="new-message-input">
+                            <i class="fa fa-send new-message-send"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="timer">
+                    Time left:
+                    <span>00:00</span>
+                </div>
+                <div class="playerbox playerbox-player">
+                    <img src="images/placeholders/player-1.svg" width="100" height="100" alt="You"></img>
+                    <div class="playerinfo">
+                        <div class="playername">better_username(You)</div>
+                        <div class="stats-show">
+                            <i class="fa fa-caret-right"></i>
+                            <span>Show stats</span>
+                        </div>
+                        <div class="stats">
+                            Games won: 3<br>Win-Loss-Ratio: 0.6
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="bottombar">
+            <img src="images/placeholders/player-1.svg" width="30" height="30" alt="You"></img>
+            better_username
+            (<a href="/profile/better_username">view profile</a>)
+            <img src="images/placeholders/guild-1.svg" width="35" height="35" alt="Your guild"></img>
+            cooler_guild
+            (<a href="/guild/cooler_guild">view guild</a>)
+        </div>
+    </div>
+
     <i class="fa fa-user" id="user"></i>
     <div id="account-select">
         <div id="account-select-login">Login</div>
@@ -79,36 +181,36 @@
     </div>
 
     <!--Delete form-->
-        <div id="delete-popup-bg">
-            <div id="delete-popup">
-                <div id="delete-popup-header">
-                    <span>Delete account</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" class="popup-close" id="popup-close-delete">
-                        <g stroke="white" stroke-linecap="round" stroke-width="2">
-                            <line x1="3" x2="7" y1="3" y2="7" />
-                            <line x1="3" x2="7" y1="7" y2="3" />
-                        </g>
-                    </svg>
-                </div>
-                <form id="delete-form">
-                    <label for="delete-username">Username</label>
-                    <br>
-                    <input type="text" id="delete-username" name="username" placeholder="Enter your username" required>
-                    <br>
-                    <label for="delete-password">Password</label>
-                    <br>
-                    <input type="password" id="delete-password" name="password" placeholder="Enter your password"  required>
-                    <br>
-                    <div class="account-error">Incorrect username or password</div>
-                    <button type="submit">Delete</button>
-                </form>
+    <div id="delete-popup-bg">
+        <div id="delete-popup">
+            <div id="delete-popup-header">
+                <span>Delete account</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="25" height="25" class="popup-close" id="popup-close-delete">
+                    <g stroke="white" stroke-linecap="round" stroke-width="2">
+                        <line x1="3" x2="7" y1="3" y2="7" />
+                        <line x1="3" x2="7" y1="7" y2="3" />
+                    </g>
+                </svg>
             </div>
+            <form id="delete-form">
+                <label for="delete-username">Username</label>
+                <br>
+                <input type="text" id="delete-username" name="username" placeholder="Enter your username" required>
+                <br>
+                <label for="delete-password">Password</label>
+                <br>
+                <input type="password" id="delete-password" name="password" placeholder="Enter your password"  required>
+                <br>
+                <div class="account-error">Incorrect username or password</div>
+                <button type="submit">Delete</button>
+            </form>
         </div>
+    </div>
 
-        <!--Import AJAX, Socket.io and index.js-->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
-        <script src="index.js"></script>
+    <!--Import AJAX, Socket.io and index.js-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="index.js"></script>
     <script src="customElements.js"></script>
 </body>
 </html>
