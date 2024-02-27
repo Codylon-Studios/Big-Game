@@ -157,7 +157,7 @@ app.post('/logout', async (req, res) => {
 
     // Clear the session ID from the user's session data
     delete req.session.user.sessionid;
-
+    res.clearCookie('sessionid');
     // Destroy the session
     req.session.destroy((err) => {
       if (err) {
@@ -341,6 +341,7 @@ app.post('/delete', async (req, res) => {
     // If passwords match, delete the account and respond with success message
     if (match) {
       await pool.query('DELETE FROM accounts WHERE username = $1', [username]);
+      res.clearCookie('sessionid');
       req.session.destroy((err) => {
         if (err) {
           console.error('Error destroying session:', err);
