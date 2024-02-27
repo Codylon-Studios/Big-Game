@@ -5,7 +5,8 @@
 //DON'T TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING
 //
 //Installing manual: https://flint-zenith-b13.notion.site/424c21ffbb5648f4b674cb9a1472c43a?v=8377e7b70ae842dc91e2261c80e4ac75
-// Copyright (c) 2024 Codylon Studios
+// Copyright (c) 2024 Codylon Studios.
+// 
 // Import necessary modules: express, http server, socket.io, pg and bcrypt, cors, dotenv, connect-pg-simple, fs
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -43,6 +44,7 @@ const io = require('socket.io')(server, {
     sameSite: "lax"
   }
 });
+// Attach Socket.io to the HTTP server
 io.attach(server);
 // Listen for connections on port 3000
 server.listen(3000, () => {
@@ -52,7 +54,7 @@ server.listen(3000, () => {
 const dbConfig = JSON.parse(fs.readFileSync('db_config.json'));
 // Load environment variables from .env file
 dotenv.config();
-
+// Connect to the PostgreSQL database
 const pool = new Pool(dbConfig);
 //Create new session
 const sessionMiddleware = session({
@@ -62,6 +64,7 @@ const sessionMiddleware = session({
     createTableIfMissing: true,
     // Insert connect-pg-simple options here
   }),
+  // Insert express-session options here
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
@@ -136,7 +139,8 @@ app.get('/auth', (req, res) => {
 //
 //POST
 //
-// Handle POST request to root route (for deleting user)(original)
+
+// Handle POST request to root route
 app.post('/', async (req, res) => {
 });
 // Handle POST request to /logout route
@@ -157,6 +161,7 @@ app.post('/logout', async (req, res) => {
 
     // Clear the session ID from the user's session data
     delete req.session.user.sessionid;
+    // Clear the session cookie
     res.clearCookie('sessionid');
     // Destroy the session
     req.session.destroy((err) => {
@@ -190,8 +195,8 @@ app.post('/register', async (req, res) => {
   const passwordRepeat = req.body.passwordRepeat;
 
   // List of all errors, these will be returned
-  let errors = []
-
+  let errors = [];
+  // Check if passwords match
   if (password != passwordRepeat){
     errors.push("2")
   }
@@ -201,41 +206,33 @@ app.post('/register', async (req, res) => {
     // Hash the password before storing it in the database
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Check if the username consists only of letters, numbers and underscore and is between 4 and 20 characters long
-    let usernameRegexp = /^([a-z]|[A-Z]|\d|_)+$/
-    if (! (usernameRegexp.test(username) && username.length >= 4 && username.length <= 20)) {
-      errors.push("4")
-      res.status(200).send(errors)
-      return
+    // Check if the username consists only of letters, numbers, and underscore and is between 4 and 20 characters long
+    if (!/^[a-zA-Z0-9_]{4,20}$/.test(username)) {
+      errors.push("4");
+      res.status(200).send(errors);
+      return;
     }
 
-    // Check if the password is at least 6 characters of at least 2 groups long and not the username
-    if (password.length < 6) {
+    // Check if the password is at least 6 characters long and not equal to the username
+    if (password.length < 6 || password === username) {
       errors.push("5");
-    }
-    else if (password == username) {
-      errors.push("5");
-    }
-    else {
+    } else {
       let passwordGroups = 0;
-      if (/\d/.test(password)) {passwordGroups += 1};
-      if (/[a-z]/.test(password)) {passwordGroups += 1};
-      if (/[A-Z]/.test(password)) {passwordGroups += 1};
-      if (passwordGroups == 0) {
+      if (/\d/.test(password)){passwordGroups++};
+      if (/[a-z]/.test(password)){passwordGroups++};
+      if (/[A-Z]/.test(password)){passwordGroups++};
+  
+      if (passwordGroups < 2) {
         errors.push("5");
       }
-      else if (passwordGroups == 1) {
-        let passwordCopy = password;
-        passwordCopy.replaceAll(/\d/g, "");
-        passwordCopy.replaceAll(/[a-z]/g, "");
-        passwordCopy.replaceAll(/[A-Z]/g, "");
-        if (passwordCopy.length == 0) {
-          errors.push("5");
-        }
-      }
+    }
+
+    // Send response
+    if (errors.length > 0) {
+      res.status(200).send(errors);
+      return;
     }
     
-
     // Check if username is already in use
     let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
     if (result.rows.length != 0) {
@@ -271,10 +268,9 @@ app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   // Check if the username consists only of letters, numbers and underscore and is between 4 and 20 characters long
-  let usernameRegexp = /^([a-z]|[A-Z]|\d|_)+$/
-  if (! (usernameRegexp.test(username) && username.length >= 4 && username.length <= 20)) {
+  if (!/^[a-zA-Z0-9_]{4,20}$/.test(username)) {
     res.status(200).send("2");
-    return
+    return;
   }
 
   try {
@@ -341,6 +337,7 @@ app.post('/delete', async (req, res) => {
     // If passwords match, delete the account and respond with success message
     if (match) {
       await pool.query('DELETE FROM accounts WHERE username = $1', [username]);
+      // Clear the session cookie
       res.clearCookie('sessionid');
       req.session.destroy((err) => {
         if (err) {
