@@ -1,4 +1,14 @@
-# Big Game
+<p align="center">
+  <a>
+    <h1 align="center">Big-Game</h1>
+  </a>
+</p>
+
+<p align="center">
+  &copy; 2024 Codylon Studios
+</p>
+
+# General (dev)
 Don't change the files in node_modules and json files. <br>
 COLORS.md is a color guideline. See COLORS.md. <br>
 All files in public are frontend; you can create new files (e.g. .css, .js, .html) in there. <br>
