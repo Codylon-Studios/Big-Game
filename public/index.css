@@ -429,6 +429,7 @@ input[type="checkbox"] {
     background-color: #fff;
     border: 2px solid #050;
     transform: translateY(2px);
+    padding: 0px;
 }
 
 input[type="checkbox"]:not(:checked):hover {
@@ -457,4 +458,14 @@ input[type="checkbox"]:checked::before {
     0% {clip-path: polygon(5px 15px, 5px 15px, 5px 15px, 7px 13px, 7px 13px, 7px 13px);}
     33% {clip-path: polygon(5px 15px, 15px 25px, 15px 25px, 14.1px 20.1px, 14.1px 20.1px, 7px 13px);}
     100% {clip-path: polygon(5px 15px, 15px 25px, 25px 2.5px, 22.4px 1.4px, 14.1px 20.1px, 7px 13px);}
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-container input[type="checkbox"] {
+    flex-shrink: 0;
+    margin-right: 10px;
 }

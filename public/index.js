@@ -212,10 +212,12 @@ document.getElementById("delete-form").addEventListener("submit", (ev) => {
     // Send request to server
     ev.preventDefault();
     let url = "/delete";
-    let data = {username: document.getElementById("delete-username").value,
+    let data = {
                 password: document.getElementById("delete-password").value
                };
+    let hasResponded = false;
     $.post(url, data, function (result, status) {
+        hasResponded = true;
         // Handle result
         if (result == "0") {
             document.getElementById("delete-popup-bg").style.visibility = "hidden";
@@ -225,10 +227,30 @@ document.getElementById("delete-form").addEventListener("submit", (ev) => {
             notificationBox.innerHTML = `Your account has been deleted.`;
             document.body.appendChild(notificationBox);
         }
-        else {
+        else if (result == "1") {
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "green");
+            notificationBox.innerHTML = `An error has occurred on the server side!`;
+            document.body.appendChild(notificationBox);
+        }
+        else if (result == "2") {
             document.querySelectorAll("#delete-form > .account-error")[0].style.display = "block";
         }
+        else if (result == "3") {
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "red");
+            notificationBox.innerHTML = `You are not logged in!`;
+            document.body.appendChild(notificationBox);
+        }
     });
+    setTimeout(() => {
+        if (! hasResponded) {
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "red");
+            notificationBox.innerHTML = `The server didn't respond in time!`;
+            document.body.appendChild(notificationBox);
+        }
+    }, 5000);
 });
 
 document.querySelector(".moves-chat-select-moves").addEventListener("click", () => {

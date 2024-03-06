@@ -323,8 +323,13 @@ app.post('/delete', async (req, res) => {
     0: Deletion successful
     1: Internal server error
     2: Incorrect username or password
+    3: Not logged in
   */
-  const username = req.body.username;
+  if (! req.session.user) {
+    res.status(200).send('3');
+    return
+  }
+  const username = req.session.user.username;
   const password = req.body.password;
 
   try {
