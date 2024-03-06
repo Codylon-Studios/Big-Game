@@ -63,10 +63,16 @@ document.getElementById("account-select-logout").addEventListener("click", () =>
             notificationBox.innerHTML = `You have been logged out.`;
             document.body.appendChild(notificationBox);
         }
+        else if (result == "1") {
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "red");
+            notificationBox.innerHTML = `An error has occurred on the server side!`
+            document.body.appendChild(notificationBox);
+        }
         else {
             let notificationBox = document.createElement("notification-box");
             notificationBox.setAttribute("color", "red");
-            notificationBox.innerHTML = `An error has occurred on the server side!`;
+            notificationBox.innerHTML = `You are not logged in!`;
             document.body.appendChild(notificationBox);
         }
     });

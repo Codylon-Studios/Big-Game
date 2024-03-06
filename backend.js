@@ -144,8 +144,13 @@ app.post('/logout', async (req, res) => {
   /* Result codes:
     0: Logout successful
     1: Internal server error
+    2: Not logged in
   */
   try {
+    if (! req.session.user) {
+      res.status(200).send('2');
+      return
+    }
     const username = req.session.user.username;
 
     // Connect to the PostgreSQL database
