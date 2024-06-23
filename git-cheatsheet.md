@@ -1,5 +1,5 @@
 # Git Cheatsheet
-### Rebase
+### Rebase - Merge (Preferred)
 ```
 git checkout develop
 git pull
@@ -11,4 +11,13 @@ git merge --no-ff <branch>
 git push
 git branch -d <branch>
 ```
-> You can call `git config merge.ff false` to change config. Then call instead of `git merge --no-ff <branch>` just `git merge <branch>`.
+> You can call `git config merge.ff false` to change config. Then call `git merge <branch>` instead of `git merge --no-ff <branch>`.
+
+### Traditional Merge
+
+```
+git checkout develop
+git pull
+git merge --no-ff <branch>
+git push
+```

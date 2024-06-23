@@ -1,23 +1,23 @@
-
 //
 //This is the main backend file
 //
 //DON'T TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING
 //
 //Installing manual: https://flint-zenith-b13.notion.site/424c21ffbb5648f4b674cb9a1472c43a?v=8377e7b70ae842dc91e2261c80e4ac75
-// Copyright (c) 2024 Codylon Studios
-// Import necessary modules: express, http server, socket.io, pg and bcrypt, cors, dotenv, connect-pg-simple, fs
+// Copyright (c) 2024 Codylon Studios.
+// 
+// Import necessary modules: express, http server, socket.io, pg and bcrypt, cors, dotenv, jwt, fs
 const cors = require('cors');
 const dotenv = require('dotenv');
 const express = require('express');
-const session = require('express-session');
-const pgSession = require('connect-pg-simple')(session);
 const { createServer } = require('node:http');
 const { join } = require('node:path');
 const fs = require('fs');
 const { Pool } = require('pg');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 // Initialize Express application
 const app = express();
 // Define saltRounds for bcrypt hashing
@@ -43,6 +43,7 @@ const io = require('socket.io')(server, {
     sameSite: "lax"
   }
 });
+// Attach Socket.io to the HTTP server
 io.attach(server);
 // Listen for connections on port 3000
 server.listen(3000, () => {
@@ -52,39 +53,44 @@ server.listen(3000, () => {
 const dbConfig = JSON.parse(fs.readFileSync('db_config.json'));
 // Load environment variables from .env file
 dotenv.config();
-
+// Connect to the PostgreSQL database
 const pool = new Pool(dbConfig);
-//Create new session
-const sessionMiddleware = session({
-  store: new pgSession({
-    pool : pool, 
-    tableName : 'session',
-    createTableIfMissing: true,
-    // Insert connect-pg-simple options here
-  }),
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true,
-  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, // 10 days
-  name: 'sessionid',
-});
+
+// JWT secret key
+const JWT_SECRET = process.env.JWT_SECRET;
+
 // Make `pool` available to other parts of the application as needed
 module.exports = pool;
+
 // Store session IDs
 const accounts = {};
 
 //
 //APP.USE
 //
-//Create new session
-app.use(sessionMiddleware);
+
 // Set up body-parser middleware to parse request bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
 
-//Share session context with Socket.IO
-io.engine.use(sessionMiddleware);
+// JWT Middleware
+const authenticateToken = (req, res, next) => {
+  var token = req.headers.authorization.split(' ')[1];
+  if (token) {
+      return jwt.verify(token, JWT_SECRET, function(err, decoded) {
+          if (err) {
+              return res.json({
+                  success: false,
+                  message: "Failed to authenticate token.",
+              });
+          }
+          req.user = user;
+          return next();
+      });
+  }
+  return res.unauthorized();
+};
 
 io.engine.on("connection_error", (err) => {
   console.log(err.req);      // the request object
@@ -119,39 +125,32 @@ io.on('connection', (socket) => {
 //APP.GET
 //
 //Serve index.html when root URL is accessed
-app.get('/',(req,res, next)=>{
-
-  res.sendFile(join(__dirname + '/public/index.html'))
+app.get('/', (req, res, next) => {
+  res.sendFile(join(__dirname + '/public/index.html'));
 });
+
 // Add a new route to check if the user is authenticated
-app.get('/auth', (req, res) => {
-  if (req.session.user) {
-    res.json({ authenticated: true, user: req.session.user });
-  } else {
-    res.json({ authenticated: false });
-  }
+app.get('/auth', authenticateToken, (req, res) => {
+  res.json({ authenticated: true, user: req.user });
 });
 
 
 //
 //POST
 //
-// Handle POST request to root route (for deleting user)(original)
+
+// Handle POST request to root route
 app.post('/', async (req, res) => {
 });
+
 // Handle POST request to /logout route
-app.post('/logout', async (req, res) => {
+app.post('/logout', authenticateToken, async (req, res) => {
   /* Result codes:
     0: Logout successful
     1: Internal server error
-    2: Not logged in
   */
   try {
-    if (! req.session.user) {
-      res.status(200).send('2');
-      return
-    }
-    const username = req.session.user.username;
+    const username = req.user.username;
 
     // Connect to the PostgreSQL database
     const client = await pool.connect();
@@ -160,19 +159,8 @@ app.post('/logout', async (req, res) => {
     // Release the client connection
     client.release();
 
-    // Clear the session ID from the user's session data
-    delete req.session.user.sessionid;
-
-    // Destroy the session
-    req.session.destroy((err) => {
-      if (err) {
-        console.error('Error destroying session:', err);
-        res.status(200).send('1');
-      } else {
-        // Send success response
-        res.status(200).send('0');
-      }
-    });
+    // Send success response
+    res.status(200).send('0');
   } catch (error) {
     // If an error occurs, log it and respond with internal server error message
     console.error('Error logging out:', error);
@@ -195,10 +183,10 @@ app.post('/register', async (req, res) => {
   const passwordRepeat = req.body.passwordRepeat;
 
   // List of all errors, these will be returned
-  let errors = []
-
-  if (password != passwordRepeat){
-    errors.push("2")
+  let errors = [];
+  // Check if passwords match
+  if (password != passwordRepeat) {
+    errors.push("2");
   }
   try {
     // Connect to the PostgreSQL database
@@ -206,65 +194,55 @@ app.post('/register', async (req, res) => {
     // Hash the password before storing it in the database
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Check if the username consists only of letters, numbers and underscore and is between 4 and 20 characters long
-    let usernameRegexp = /^([a-z]|[A-Z]|\d|_)+$/
-    if (! (usernameRegexp.test(username) && username.length >= 4 && username.length <= 20)) {
-      errors.push("4")
-      res.status(200).send(errors)
-      return
+    // Check if the username consists only of letters, numbers, and underscore and is between 4 and 20 characters long
+    if (!/^[a-zA-Z0-9_]{4,20}$/.test(username)) {
+      errors.push("4");
+      res.status(200).send(errors);
+      return;
     }
 
-    // Check if the password is at least 6 characters of at least 2 groups long and not the username
-    if (password.length < 6) {
+    // Check if the password is at least 6 characters long and not equal to the username
+    if (password.length < 6 || password === username) {
       errors.push("5");
-    }
-    else if (password == username) {
-      errors.push("5");
-    }
-    else {
+    } else {
       let passwordGroups = 0;
-      if (/\d/.test(password)) {passwordGroups += 1};
-      if (/[a-z]/.test(password)) {passwordGroups += 1};
-      if (/[A-Z]/.test(password)) {passwordGroups += 1};
-      if (passwordGroups == 0) {
+      if (/\d/.test(password)) { passwordGroups++; }
+      if (/[a-z]/.test(password)) { passwordGroups++; }
+      if (/[A-Z]/.test(password)) { passwordGroups++; }
+
+      if (passwordGroups < 2) {
         errors.push("5");
       }
-      else if (passwordGroups == 1) {
-        let passwordCopy = password;
-        passwordCopy.replaceAll(/\d/g, "");
-        passwordCopy.replaceAll(/[a-z]/g, "");
-        passwordCopy.replaceAll(/[A-Z]/g, "");
-        if (passwordCopy.length == 0) {
-          errors.push("5");
-        }
-      }
     }
-    
+
+    // Send response
+    if (errors.length > 0) {
+      res.status(200).send(errors);
+      return;
+    }
 
     // Check if username is already in use
     let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
     if (result.rows.length != 0) {
-      errors.push("3")
-    }
-    else if (errors.length === 0) {
+      errors.push("3");
+    } else if (errors.length === 0) {
       // Insert a new row into the accounts table with the provided username and hashed password
       await client.query('INSERT INTO accounts (username, password) VALUES ($1, $2)', [username, hashedPassword]);
       //Inserts current socketid
       const sessionid = req.socket.id;
       await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
       client.release();
-      req.session.user = { username };
-      res.status(200).send("0");
-      return
+      const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '10d' });
+      res.json({ token });
+      return;
     }
-    res.status(200).send(errors)
+    res.status(200).send(errors);
   } catch (error) {
     // If an error occurs, log it and respond with internal server error message
     console.error('Error while storing user data', error);
     res.status(200).send('1');
   }
 });
-
 
 // Handle POST request to /login route
 app.post('/login', async (req, res) => {
@@ -276,10 +254,9 @@ app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   // Check if the username consists only of letters, numbers and underscore and is between 4 and 20 characters long
-  let usernameRegexp = /^([a-z]|[A-Z]|\d|_)+$/
-  if (! (usernameRegexp.test(username) && username.length >= 4 && username.length <= 20)) {
+  if (!/^[a-zA-Z0-9_]{4,20}$/.test(username)) {
     res.status(200).send("2");
-    return
+    return;
   }
 
   try {
@@ -298,12 +275,10 @@ app.post('/login', async (req, res) => {
     client.release();
     // Compare the provided password with the hashed password stored in the database
     const match = await bcrypt.compare(password, user.password);
-    // If passwords match, update the session ID in the database and respond with success message
+    // If passwords match, generate JWT token and respond with success message
     if (match) {
-      const sessionid = req.sessionID;
-      await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
-      req.session.user = { username };
-      res.status(200).send("0");
+      const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '10d' });
+      res.json({ token });
     } else {
       // If passwords don't match, respond with error message
       res.status(200).send("2");
@@ -316,20 +291,14 @@ app.post('/login', async (req, res) => {
   }
 });
 
-
 // Handle POST request to /delete route
-app.post('/delete', async (req, res) => {
+app.post('/delete', authenticateToken, async (req, res) => {
   /* Result codes:
     0: Deletion successful
     1: Internal server error
     2: Incorrect username or password
-    3: Not logged in
   */
-  if (! req.session.user) {
-    res.status(200).send('3');
-    return
-  }
-  const username = req.session.user.username;
+  const username = req.user.username;
   const password = req.body.password;
 
   try {
@@ -338,8 +307,6 @@ app.post('/delete', async (req, res) => {
     // Query the database to retrieve the user with the given username
     const result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
     // Release the client connection
-    client.release();
-    // If no user found with the given username, give error
     if (result.rows.length === 0) {
       res.status(200).send("2");
       return;
@@ -351,14 +318,7 @@ app.post('/delete', async (req, res) => {
     // If passwords match, delete the account and respond with success message
     if (match) {
       await pool.query('DELETE FROM accounts WHERE username = $1', [username]);
-      req.session.destroy((err) => {
-        if (err) {
-          console.error('Error destroying session:', err);
-          res.status(200).send('1');
-        } else {
-          res.status(200).send("0");
-        }
-      });
+      res.status(200).send("0");
       return;
     } else {
       // If passwords don't match, respond with error message
@@ -371,3 +331,4 @@ app.post('/delete', async (req, res) => {
     res.status(200).send('1');
   }
 });
+
