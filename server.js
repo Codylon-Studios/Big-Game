@@ -26,13 +26,6 @@ const io = require('socket.io')(server, {
     allowedHeaders: ['Access-Control-Allow-Origin'],
     credentials: true
   },
-  allowEIO3: true,
-  cookie: {
-    name: "io",
-    path: "/",
-    httpOnly: true,
-    sameSite: "lax"
-  }
 });
 
 // Listen for connections on port 3000

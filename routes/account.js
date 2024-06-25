@@ -17,7 +17,7 @@ router.get('/auth', authenticateToken, (req, res) => {
   res.json({ authenticated: true, user: req.user });
 });
 
-// Handle POST request to /logout route
+//POST request to /logout route
 router.post('/logout', authenticateToken, async (req, res) => {
   /* Result codes:
     0: Logout successful
@@ -29,7 +29,6 @@ router.post('/logout', authenticateToken, async (req, res) => {
     // Update the sessionid to null for the user
     await client.query('UPDATE accounts SET sessionid = NULL WHERE username = $1', [username]);
     client.release();
-    // Send success response
     res.status(200).send('0');
   } catch (error) {
     console.error('Error logging out:', error);
@@ -58,7 +57,6 @@ router.post('/register', async (req, res) => {
     errors.push("2");
   }
   try {
-    // Connect to the PostgreSQL database
     const client = await pool.connect();
     // Hash the password before storing it in the database
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -83,8 +81,6 @@ router.post('/register', async (req, res) => {
         errors.push("5");
       }
     }
-
-    // Send response
     if (errors.length > 0) {
       res.status(200).send(errors);
       return;
@@ -112,7 +108,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Handle POST request to /login route
+//POST request to /login route
 router.post('/login', async (req, res) => {
   /* Result codes:
     0: Login successful
@@ -152,7 +148,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Handle POST request to /delete route
+//POST request to /delete route
 router.post('/delete', authenticateToken, async (req, res) => {
   /* Result codes:
     0: Deletion successful
@@ -163,11 +159,9 @@ router.post('/delete', authenticateToken, async (req, res) => {
   const password = req.body.password;
 
   try {
-    // Connect to the PostgreSQL database
     const client = await pool.connect();
     // Query the database to retrieve the user with the given username
     const result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
-    // Release the client connection
     if (result.rows.length === 0) {
       res.status(200).send("2");
       return;
@@ -176,7 +170,6 @@ router.post('/delete', authenticateToken, async (req, res) => {
     const user = result.rows[0];
     // Compare the provided password with the hashed password stored in the database
     const match = await bcrypt.compare(password, user.password);
-    // If passwords match, delete the account and respond with success message
     if (match) {
       await pool.query('DELETE FROM accounts WHERE username = $1', [username]);
       res.status(200).send("0");
