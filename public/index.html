@@ -140,7 +140,7 @@
                 <br>
                 <label for="login-password">Password</label>
                 <br>
-                <input type="password" id="login-password" name="password" placeholder="Enter your password"  required>
+                <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
                 <br>
                 <div class="account-error">Incorrect username or password</div>
                 <button type="submit">Login</button>
@@ -167,9 +167,9 @@
                 <br>
                 <label for="register-password">Password</label>
                 <br>
-                <input type="password" id="register-password" name="password" placeholder="Enter your password"  required>
+                <input type="password" id="register-password" name="password" placeholder="Enter your password" required>
                 <br>
-                <input type="password" id="register-password-repeat" name="passwordRepeat" placeholder="Repeat your password"  required>
+                <input type="password" id="register-password-repeat" name="passwordRepeat" placeholder="Repeat your password" required>
                 <br>
                 <div class="account-error">Passwords don't match</div>
                 <div class="account-error">Username already used</div>
@@ -193,15 +193,16 @@
                 </svg>
             </div>
             <form id="delete-form">
-                <label for="delete-username">Username</label>
-                <br>
-                <input type="text" id="delete-username" name="username" placeholder="Enter your username" required>
-                <br>
                 <label for="delete-password">Password</label>
                 <br>
-                <input type="password" id="delete-password" name="password" placeholder="Enter your password"  required>
+                <input type="password" id="delete-password" name="password" placeholder="Enter your password" required>
                 <br>
-                <div class="account-error">Incorrect username or password</div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="delete-confirm" name="confirm" required>
+                    <label for="delete-confirm">Please confirm you want to delete your account. This can't be undone!</label>
+                </div>
+                <br>
+                <div class="account-error">Incorrect password</div>
                 <button type="submit">Delete</button>
             </form>
         </div>

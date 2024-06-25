@@ -417,3 +417,55 @@ form > button:hover {
     box-shadow: 0 2px 10px 0px rgba(0, 0, 0, 0.2);
     display: none;
 }
+
+input[type="checkbox"] {
+    appearance: none;
+    margin: 0px;
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    background-color: #fff;
+    border: 2px solid #050;
+    transform: translateY(2px);
+    padding: 0px;
+}
+
+input[type="checkbox"]:not(:checked):hover {
+    background-color: #efc;
+}
+
+input[type="checkbox"]::before {
+    content: "";
+    display: none;
+    width: 30px;
+    height: 30px;
+    background-color: #492;
+    transform: translate(-6px, -6px);
+}
+
+input[type="checkbox"]:checked {
+    background-color: #bf9;
+}
+
+input[type="checkbox"]:checked::before {
+    animation: draw_checkmark 0.3s linear forwards;
+    display: block;
+}
+
+@keyframes draw_checkmark {
+    0% {clip-path: polygon(5px 15px, 5px 15px, 5px 15px, 7px 13px, 7px 13px, 7px 13px);}
+    33% {clip-path: polygon(5px 15px, 15px 25px, 15px 25px, 14.1px 20.1px, 14.1px 20.1px, 7px 13px);}
+    100% {clip-path: polygon(5px 15px, 15px 25px, 25px 2.5px, 22.4px 1.4px, 14.1px 20.1px, 7px 13px);}
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-container input[type="checkbox"] {
+    flex-shrink: 0;
+    margin-right: 10px;
+}
