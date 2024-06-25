@@ -9,10 +9,14 @@ socket.on('updtplayer', (accounts) => {
     console.log(accounts);
 });
 
-// Clicking on user icon
+
+
+//
+// CLICK ON USER ICON
+//
 document.getElementById("user").addEventListener("click", () => {
     $.ajax({
-        url: '/auth',
+        url: '/account/auth',
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -36,29 +40,29 @@ document.getElementById("user").addEventListener("click", () => {
     });
 });
 
-// Hides the dropdown if the user doesn't click on the icon
+//
+// HIDE DROPDOWN IF USER DOESNT CLICK ON USER ICON
+//
 window.addEventListener("click", (ev) => {
     if (ev.target != document.getElementById("user")) {
         document.getElementById("account-select").style.visibility = "hidden";
     }
 });
 
-// Clicking on dropdown login
+//
+// LOGIN - REGISTER - LOGOUT - DELETE
+//
 document.getElementById("account-select-login").addEventListener("click", () => {
     document.getElementById("login-popup-bg").style.visibility = "visible";
     document.getElementById("account-select").style.visibility = "hidden";
 });
-
-// Clicking on dropdown register
 document.getElementById("account-select-register").addEventListener("click", () => {
     document.getElementById("register-popup-bg").style.visibility = "visible";
     document.getElementById("account-select").style.visibility = "hidden";
 });
-
-// Clicking on dropdown logout
 document.getElementById("account-select-logout").addEventListener("click", () => {
     // Send request to server
-    let url = "/logout";
+    let url = "/account/logout";
     let data = {};
     let hasResponded = false;
     $.ajax({
@@ -72,6 +76,7 @@ document.getElementById("account-select-logout").addEventListener("click", () =>
             hasResponded = true;
             // Handle result
             if (result == "0") {
+                console.log("logged out");
                 localStorage.removeItem('token');
                 let notificationBox = document.createElement("notification-box");
                 notificationBox.setAttribute("color", "blue");
@@ -79,6 +84,7 @@ document.getElementById("account-select-logout").addEventListener("click", () =>
                 document.body.appendChild(notificationBox);
             }
             else if (result == "1") {
+                console.log("error");
                 let notificationBox = document.createElement("notification-box");
                 notificationBox.setAttribute("color", "red");
                 notificationBox.innerHTML = `An error has occurred on the server side!`
@@ -101,9 +107,6 @@ document.getElementById("account-select-logout").addEventListener("click", () =>
         }
     }, 5000);
 });
-
-
-// Clicking on dropdown delete account
 document.getElementById("account-select-delete").addEventListener("click", () => {
     document.getElementById("delete-popup-bg").style.visibility = "visible";
     document.getElementById("account-select").style.visibility = "hidden";
@@ -117,10 +120,14 @@ document.querySelectorAll(".popup-close").forEach((element) => {
     });
 })
 
+
+//
+// LOGIN FORM
+//
 document.getElementById("login-form").addEventListener("submit", (ev) => {
     // Send request to server
     ev.preventDefault();
-    let url = "/login";
+    let url = "/account/login";
     let data = {
         username: document.getElementById("login-username").value,
         password: document.getElementById("login-password").value
@@ -159,10 +166,13 @@ document.getElementById("login-form").addEventListener("submit", (ev) => {
     }, 5000);
 });
 
+//
+// REGISTER FORM
+//
 document.getElementById("register-form").addEventListener("submit", (ev) => {
     // Send request to server
     ev.preventDefault();
-    let url = "/register";
+    let url = "/account/register";
     let data = {
         username: document.getElementById("register-username").value,
         password: document.getElementById("register-password").value,
@@ -230,7 +240,7 @@ document.getElementById("register-form").addEventListener("submit", (ev) => {
 document.getElementById("delete-form").addEventListener("submit", (ev) => {
     // Send request to server
     ev.preventDefault();
-    let url = "/delete";
+    let url = "/account/delete";
     let data = {
         password: document.getElementById("delete-password").value
     };

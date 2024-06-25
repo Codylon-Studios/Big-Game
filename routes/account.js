@@ -1,175 +1,43 @@
 //
-//This is the main backend file
+//This is a backend file
 //
 //DON'T TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING
 //
 //Installing manual: https://flint-zenith-b13.notion.site/424c21ffbb5648f4b674cb9a1472c43a?v=8377e7b70ae842dc91e2261c80e4ac75
 // Copyright (c) 2024 Codylon Studios.
 // 
-// Import necessary modules: express, http server, socket.io, pg and bcrypt, cors, dotenv, jwt, fs
-const cors = require('cors');
-const dotenv = require('dotenv');
-const express = require('express');
-const { createServer } = require('node:http');
-const { join } = require('node:path');
-const fs = require('fs');
-const { Pool } = require('pg');
-const bodyParser = require('body-parser');
+const { authenticateToken, pool, JWT_SECRET, saltRounds } = require('./constant')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
-// Initialize Express application
-const app = express();
-// Define saltRounds for bcrypt hashing
-const saltRounds = 10;
-app.use(cors());
-// Create an HTTP server using Express
-const server = createServer(app);
-// Initialize Socket.io for real-time communication
-const io = require('socket.io')(server, {
-  //Setup CORS
-  cors: {
-      origin: "http://localhost:3000",
-      methods: ["GET", "POST"],
-      transports: ['websocket', 'polling'],
-      allowedHeaders: ['Access-Control-Allow-Origin'],
-      credentials: true
-    },
-  allowEIO3: true,
-  cookie: {
-    name: "io",
-    path: "/",
-    httpOnly: true,
-    sameSite: "lax"
-  }
-});
-// Attach Socket.io to the HTTP server
-io.attach(server);
-// Listen for connections on port 3000
-server.listen(3000, () => {
-  console.log('server running at http://localhost:3000');
-});
-//Create a PostgreSQL connection pool
-const dbConfig = JSON.parse(fs.readFileSync('db_config.json'));
-// Load environment variables from .env file
-dotenv.config();
-// Connect to the PostgreSQL database
-const pool = new Pool(dbConfig);
-
-// JWT secret key
-const JWT_SECRET = process.env.JWT_SECRET;
-
-// Make `pool` available to other parts of the application as needed
-module.exports = pool;
-
-// Store session IDs
-const accounts = {};
-
-//
-//APP.USE
-//
-
-// Set up body-parser middleware to parse request bodies
-app.use(bodyParser.urlencoded({ extended: true }));
-// Serve static files from the 'public' directory
-app.use(express.static('public'));
-
-// JWT Middleware
-const authenticateToken = (req, res, next) => {
-  var token = req.headers.authorization.split(' ')[1];
-  if (token) {
-      return jwt.verify(token, JWT_SECRET, function(err, decoded) {
-          if (err) {
-              return res.json({
-                  success: false,
-                  message: "Failed to authenticate token.",
-              });
-          }
-          req.user = user;
-          return next();
-      });
-  }
-  return res.unauthorized();
-};
-
-io.engine.on("connection_error", (err) => {
-  console.log(err.req);      // the request object
-  console.log(err.code);     // the error code, for example 1
-  console.log(err.message);  // the error message, for example "Session ID unknown"
-  console.log(err.context);  // some additional error context
-});
-
-//
-//CONNECTION
-//
-// Handle socket connection event
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  // Add the connected user to the accounts object
-
-  accounts[socket.id] = {};
-  // Emit 'updtplayer' event to update clients with current player information
-  io.emit('updtplayer', accounts);
-  console.log(accounts);
-  // Handle socket disconnection event
-  socket.on('disconnect', () => {
-    console.log('a user disconnected');
-    // Remove the disconnected user from the accounts object
-    delete accounts[socket.id];
-    console.log(accounts);
-  });
-});
-
-
-//
-//APP.GET
-//
-//Serve index.html when root URL is accessed
-app.get('/', (req, res, next) => {
-  res.sendFile(join(__dirname + '/public/index.html'));
-});
+const express = require('express');
+const router = express.Router();
 
 // Add a new route to check if the user is authenticated
-app.get('/auth', authenticateToken, (req, res) => {
+router.get('/auth', authenticateToken, (req, res) => {
   res.json({ authenticated: true, user: req.user });
 });
-
-
-//
-//POST
-//
-
-// Handle POST request to root route
-app.post('/', async (req, res) => {
-});
-
 // Handle POST request to /logout route
-app.post('/logout', authenticateToken, async (req, res) => {
+router.post('/logout', authenticateToken, async (req, res) => {
   /* Result codes:
     0: Logout successful
     1: Internal server error
   */
   try {
     const username = req.user.username;
-
-    // Connect to the PostgreSQL database
     const client = await pool.connect();
     // Update the sessionid to null for the user
     await client.query('UPDATE accounts SET sessionid = NULL WHERE username = $1', [username]);
-    // Release the client connection
     client.release();
-
     // Send success response
     res.status(200).send('0');
   } catch (error) {
-    // If an error occurs, log it and respond with internal server error message
     console.error('Error logging out:', error);
     res.status(200).send('1');
   }
 });
 
 // Handle POST request to /register route
-app.post('/register', async (req, res) => {
+router.post('/register', async (req, res) => {
   /* Result codes:
     0: Registration successful
     1: Internal server error
@@ -238,14 +106,13 @@ app.post('/register', async (req, res) => {
     }
     res.status(200).send(errors);
   } catch (error) {
-    // If an error occurs, log it and respond with internal server error message
     console.error('Error while storing user data', error);
     res.status(200).send('1');
   }
 });
 
 // Handle POST request to /login route
-app.post('/login', async (req, res) => {
+router.post('/login', async (req, res) => {
   /* Result codes:
     0: Login successful
     1: Internal server error
@@ -260,39 +127,32 @@ app.post('/login', async (req, res) => {
   }
 
   try {
-    // Connect to the PostgreSQL database
     const client = await pool.connect();
     // Query the database to retrieve the user with the given username
     let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
-    // If no user found with the given username, give error
     if (result.rows.length === 0) {
       res.status(200).send("2");
       return;
     }
     // Get the user data from the query result
     const user = result.rows[0];
-    // Release the client connection
     client.release();
-    // Compare the provided password with the hashed password stored in the database
     const match = await bcrypt.compare(password, user.password);
-    // If passwords match, generate JWT token and respond with success message
     if (match) {
       const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '10d' });
       res.json({ token });
     } else {
-      // If passwords don't match, respond with error message
       res.status(200).send("2");
       return;
     }
   } catch (error) {
-    // If an error occurs, log it and respond with internal server error message
     console.error('Error authenticating user:', error);
     res.status(200).send('1');
   }
 });
 
 // Handle POST request to /delete route
-app.post('/delete', authenticateToken, async (req, res) => {
+router.post('/delete', authenticateToken, async (req, res) => {
   /* Result codes:
     0: Deletion successful
     1: Internal server error
@@ -326,9 +186,9 @@ app.post('/delete', authenticateToken, async (req, res) => {
       return;
     }
   } catch (error) {
-    // If an error occurs, log it and respond with internal server error message
     console.error('Error authenticating user:', error);
     res.status(200).send('1');
   }
 });
 
+module.exports = router;
