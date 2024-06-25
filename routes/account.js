@@ -12,10 +12,11 @@ const jwt = require('jsonwebtoken');
 const express = require('express');
 const router = express.Router();
 
-// Add a new route to check if the user is authenticated
+//Check if the user is authenticated
 router.get('/auth', authenticateToken, (req, res) => {
   res.json({ authenticated: true, user: req.user });
 });
+
 // Handle POST request to /logout route
 router.post('/logout', authenticateToken, async (req, res) => {
   /* Result codes:
