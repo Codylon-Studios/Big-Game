@@ -256,6 +256,8 @@ document.getElementById("delete-form").addEventListener("submit", (ev) => {
             hasResponded = true;
             // Handle result
             if (result == "0") {
+                console.log("account deleted");
+                localStorage.removeItem('token');
                 document.getElementById("delete-popup-bg").style.visibility = "hidden";
                 document.querySelectorAll("#delete-form > .account-error")[0].style.display = "none";
                 let notificationBox = document.createElement("notification-box");
