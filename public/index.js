@@ -301,16 +301,3 @@ document.querySelector(".moves-chat-select-chat").addEventListener("click", () =
     document.querySelector(".chat").style.display = "block";
     document.querySelector(".moves").style.display = "none";
 });
-
-document.querySelectorAll(".playerbox .stats-show").forEach((element) => {
-    element.addEventListener("click", () => {
-        if (element.children[0].style.transform == "rotate(90deg) translateX(2px)") {
-            element.children[0].style.transform = "";
-            element.nextElementSibling.style.display = "none";
-        }
-        else {
-            element.children[0].style.transform = "rotate(90deg) translateX(2px)";
-            element.nextElementSibling.style.display = "block";
-        };
-    });
-});
