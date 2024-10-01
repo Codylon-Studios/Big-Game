@@ -3,14 +3,22 @@ body {
     font-size: 1.6vh;
 }
 
+#left-bar {
+    height: 100vh;
+    position: absolute;
+    left: calc((100vw - 125vh) / 3);
+    top: 0;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+}
+
 #user-icon {
     width: 10vh;
     height: 10vh;
-    position: absolute;
-    top: 5vh;
-    left: calc((100vw - 125vh) / 3 + 2.5vh);
     background-color: #b86;
     border-radius: 50%;
+    margin-left: 2.5vh;
 }
 
 #user-icon > img {
@@ -18,12 +26,37 @@ body {
     height: 10vh;
 }
 
+#account-bar {
+    width: 15vh;
+    height: fit-content;
+    background-color: #b86;
+    border: 0.3vh solid #754;
+    border-radius: 1vh;
+    box-sizing: border-box;
+    justify-content: center;
+    text-align: center;
+}
+
+#account-bar > button {
+    width: 80%;
+    margin: 1vh auto;
+    padding: 0.5vh;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 0.5vh;
+    color: white;
+    border: none;
+    background-color: #6cf;
+    display: block;
+}
+
+#account-bar > button:hover {
+    background-color: #37bcff;
+}
+
 #control-bar {
     width: 15vh;
-    height: 70vh;
-    position: absolute;
-    bottom: 5vh;
-    left: calc((100vw - 125vh) / 3);
+    height: 55vh;
     background-color: #b86;
     border: 0.3vh solid #754;
     border-radius: 1vh;
@@ -394,7 +427,7 @@ form > button:hover {
 
 #user {
     color: #6cf;
-    font-size: 3vh;
+    font-size: 1vh;
     cursor: pointer;
 }
 

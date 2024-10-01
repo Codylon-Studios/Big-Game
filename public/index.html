@@ -3,7 +3,6 @@
 <head>
     <title>Big Game</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!--This imports icons-->
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="customElements.css">
 </head>
@@ -12,13 +11,21 @@
         console.log("Loaded stylesheets")
     </script>
 
-    <!--User icon-->
-    <div id="user-icon">
-        <img src="images/placeholders/player-1.svg" width="30" height="30" alt="You"></img>
-    </div>
-    <!--Control bar-->
-    <div id="control-bar">
-        control bar (start game, watch, settings, ...)
+    <div id="left-bar">
+        <!--User icon-->
+        <div id="user-icon">
+            <img src="images/placeholders/player-1.svg" width="30" height="30" alt="You"></img>
+        </div>
+        <!--Account bar-->
+        <div id="account-bar">
+            <button id="account-login-button">Login</button>
+            <button id="account-register-button">Register</button>
+            <button id="account-logout-button">Logout</button>
+        </div>
+        <!--Control bar-->
+        <div id="control-bar">
+            control bar (start game, watch, settings, ...)
+        </div>
     </div>
     <!--Game-->
     <div id="game">
@@ -117,7 +124,7 @@
         </div>
     </div>
 
-    <i class="fa fa-user" id="user"></i>
+    <span id="user">Account</span>
     <div id="account-select">
         <div id="account-select-login">Login</div>
         <div id="account-select-register">Register</div>

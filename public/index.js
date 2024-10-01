@@ -14,14 +14,37 @@ function fillBoard() {
     }
 }
 
+function updateAccountOptions() {
+    $.ajax({
+        url: '/account/auth',
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        success: (data) => {
+            if (data.authenticated) {
+                console.log("auth");
+                document.getElementById("account-login-button").style.display = "none";
+                document.getElementById("account-register-button").style.display = "none";
+                document.getElementById("account-logout-button").style.display = "block";
+            } else {
+                console.log("not auth");
+                document.getElementById("account-login-button").style.display = "block";
+                document.getElementById("account-register-button").style.display = "block";
+                document.getElementById("account-logout-button").style.display = "none";
+            }
+        }
+    });
+}
+
 const socket = io();
 
 socket.on('updtplayer', (accounts) => {
     console.log(accounts);
 });
 
-fillBoard()
-
+updateAccountOptions();
+fillBoard();
 
 //
 // CLICK ON USER ICON
@@ -124,6 +147,63 @@ document.getElementById("account-select-delete").addEventListener("click", () =>
     document.getElementById("account-select").style.visibility = "hidden";
 });
 
+document.getElementById("account-login-button").addEventListener("click", () => {
+    document.getElementById("login-popup-bg").style.visibility = "visible";
+    document.getElementById("account-select").style.visibility = "hidden";
+});
+document.getElementById("account-register-button").addEventListener("click", () => {
+    document.getElementById("register-popup-bg").style.visibility = "visible";
+    document.getElementById("account-select").style.visibility = "hidden";
+});
+document.getElementById("account-logout-button").addEventListener("click", () => {
+    // Send request to server
+    let url = "/account/logout";
+    let data = {};
+    let hasResponded = false;
+    $.ajax({
+        url: url,
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        data: data,
+        success: (result) => {
+            hasResponded = true;
+            // Handle result
+            if (result == "0") {
+                console.log("logged out");
+                localStorage.removeItem('token');
+                updateAccountOptions();
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "blue");
+                notificationBox.innerHTML = `You have been logged out.`;
+                document.body.appendChild(notificationBox);
+            }
+            else if (result == "1") {
+                console.log("error");
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `An error has occurred on the server side!`
+                document.body.appendChild(notificationBox);
+            }
+            else {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `You are not logged in!`;
+                document.body.appendChild(notificationBox);
+            }
+        }
+    });
+    setTimeout(() => {
+        if (!hasResponded) {
+            let notificationBox = document.createElement("notification-box");
+            notificationBox.setAttribute("color", "red");
+            notificationBox.innerHTML = `The server didn't respond in time!`;
+            document.body.appendChild(notificationBox);
+        }
+    }, 5000);
+});
+
 document.querySelectorAll(".popup-close").forEach((element) => {
     element.addEventListener("click", () => {
         document.getElementById("login-popup-bg").style.visibility = "hidden";
@@ -152,6 +232,7 @@ document.getElementById("login-form").addEventListener("submit", (ev) => {
             localStorage.setItem('token', result.token);
             document.getElementById("login-popup-bg").style.visibility = "hidden";
             document.querySelectorAll("#login-form > .account-error")[0].style.display = "none";
+            updateAccountOptions();
 
             let notificationBox = document.createElement("notification-box");
             notificationBox.setAttribute("color", "green");
@@ -199,6 +280,7 @@ document.getElementById("register-form").addEventListener("submit", (ev) => {
             document.getElementById("register-popup-bg").style.visibility = "hidden";
             document.querySelectorAll("#register-form > .account-error")[0].style.display = "none";
             document.querySelectorAll("#register-form > .account-error")[1].style.display = "none";
+            updateAccountOptions();
             
             let notificationBox = document.createElement("notification-box");
             notificationBox.setAttribute("color", "green");
