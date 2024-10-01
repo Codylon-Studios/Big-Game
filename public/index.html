@@ -8,13 +8,17 @@
     <link rel="stylesheet" href="customElements.css">
 </head>
 <body>
+    <script>
+        console.log("Loaded stylesheets")
+    </script>
+
     <!--User icon-->
     <div id="user-icon">
         <img src="images/placeholders/player-1.svg" width="30" height="30" alt="You"></img>
     </div>
     <!--Control bar-->
     <div id="control-bar">
-        Blablabla
+        control bar (start game, watch, settings, ...)
     </div>
     <!--Game-->
     <div id="game">
@@ -27,8 +31,8 @@
             (<a href="/guild/coolest_guild_ever">view guild</a>)
         </div>
         <div id="wrapper-canvas-sidebar">
-            <!--Include Canvas with id "myCanvas"-->
-            <canvas id="myCanvas" width="800" height="800"></canvas>
+            <div id="chess-board"></div>
+
             <div id="sidebar">
                 <div class="playerbox playerbox-opponent">
                     <img src="images/placeholders/player-2.svg" width="100" height="100" alt="Opponent"></img>

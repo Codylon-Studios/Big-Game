@@ -77,9 +77,23 @@ body {
     height: 80vh;
 }
 
-canvas {
+#chess-board {
     height: 80vh;
     width: 80vh;
+    display: grid;
+    grid-template-rows: repeat(8, 10vh);
+    grid-template-columns: repeat(8, 10vh);
+    box-sizing: border-box;
+}
+
+.chess-field.chess-field-black {
+    background-color: #333333;
+    border: 5px solid #202020;
+}
+
+.chess-field.chess-field-white {
+    background-color: #ffefe4;
+    border: 5px solid #ffd4b7;
 }
 
 #sidebar {
@@ -135,7 +149,7 @@ canvas {
 
 .moves-chat {
     height: 26vh;
-    border-width: 0 0.5vh;
+    border-width: 0 0.3vh;
 }
 
 .moves-chat-select {
@@ -187,7 +201,7 @@ canvas {
 }
 
 .messages {
-    height: 20.2vh;
+    height: 20vh;
     overflow: scroll;
     scrollbar-color: #754 transparent;
 }
@@ -212,7 +226,7 @@ canvas {
 }
 
 .new-message {
-    width: 29vh;
+    width: 29.4vh;
     height: 2.6vh;
     background-color: #a75;
     display: flex;

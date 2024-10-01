@@ -1,14 +1,26 @@
-const canvas = document.querySelector('canvas');
-const c = canvas.getContext('2d');
+function fillBoard() {
+    let board = document.getElementById("chess-board");
+    for (let column = 0; column < 8; column++) {
+        for (let row = 0; row < 8; row++) {
+            let field = document.createElement("div");
+            field.classList.add("chess-field");
+            field.classList.add("chess-field-" + (((column + row) % 2) ? "black" : "white"));
+            board.appendChild(field);
+            field.addEventListener("click", () => {
+                let index = [...board.children].indexOf(field);
+                console.log(index);
+            })
+        }
+    }
+}
+
 const socket = io();
-c.fillStyle = "#ff9966";
-c.fillRect(0, 0, 200, 300);
-console.log("I'm working");
 
 socket.on('updtplayer', (accounts) => {
     console.log(accounts);
 });
 
+fillBoard()
 
 
 //
