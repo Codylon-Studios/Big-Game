@@ -1,3 +1,4 @@
+//chesssboard
 function fillBoard() {
     let board = document.getElementById("chess-board");
     for (let column = 0; column < 8; column++) {
@@ -14,14 +15,9 @@ function fillBoard() {
     }
 }
 
+//sidebar options
 function updateAccountOptions() {
-    $.ajax({
-        url: '/account/auth',
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        success: (data) => {
+    $.get('/account/auth', (data) => {
             if (data.authenticated) {
                 console.log("auth");
                 document.getElementById("account-login-button").style.display = "none";
@@ -33,7 +29,6 @@ function updateAccountOptions() {
                 document.getElementById("account-register-button").style.display = "block";
                 document.getElementById("account-logout-button").style.display = "none";
             }
-        }
     });
 }
 
@@ -46,17 +41,12 @@ socket.on('updtplayer', (accounts) => {
 updateAccountOptions();
 fillBoard();
 
+
 //
 // CLICK ON USER ICON
 //
 document.getElementById("user").addEventListener("click", () => {
-    $.ajax({
-        url: '/account/auth',
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        success: (data) => {
+    $.get('/account/auth', (data) => {
             if (data.authenticated) {
                 console.log("auth");
                 document.getElementById("account-select-login").style.display = "none";
@@ -71,7 +61,6 @@ document.getElementById("user").addEventListener("click", () => {
                 document.getElementById("account-select-delete").style.display = "none";
             }
             document.getElementById("account-select").style.visibility = "visible";
-        }
     });
 });
 
@@ -100,19 +89,11 @@ document.getElementById("account-select-logout").addEventListener("click", () =>
     let url = "/account/logout";
     let data = {};
     let hasResponded = false;
-    $.ajax({
-        url: url,
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        data: data,
-        success: (result) => {
+    $.post(url, data, function(result, status){
             hasResponded = true;
             // Handle result
             if (result == "0") {
                 console.log("logged out");
-                localStorage.removeItem('token');
                 let notificationBox = document.createElement("notification-box");
                 notificationBox.setAttribute("color", "blue");
                 notificationBox.innerHTML = `You have been logged out.`;
@@ -131,7 +112,6 @@ document.getElementById("account-select-logout").addEventListener("click", () =>
                 notificationBox.innerHTML = `You are not logged in!`;
                 document.body.appendChild(notificationBox);
             }
-        }
     });
     setTimeout(() => {
         if (!hasResponded) {
@@ -160,19 +140,11 @@ document.getElementById("account-logout-button").addEventListener("click", () =>
     let url = "/account/logout";
     let data = {};
     let hasResponded = false;
-    $.ajax({
-        url: url,
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        data: data,
-        success: (result) => {
+    $.post(url, data, function (result, status) {
             hasResponded = true;
             // Handle result
             if (result == "0") {
                 console.log("logged out");
-                localStorage.removeItem('token');
                 updateAccountOptions();
                 let notificationBox = document.createElement("notification-box");
                 notificationBox.setAttribute("color", "blue");
@@ -192,7 +164,6 @@ document.getElementById("account-logout-button").addEventListener("click", () =>
                 notificationBox.innerHTML = `You are not logged in!`;
                 document.body.appendChild(notificationBox);
             }
-        }
     });
     setTimeout(() => {
         if (!hasResponded) {
@@ -228,8 +199,7 @@ document.getElementById("login-form").addEventListener("submit", (ev) => {
     $.post(url, data, function (result, status) {
         hasResponded = true;
         // Handle result
-        if (result.token) {
-            localStorage.setItem('token', result.token);
+        if (result == "0") {
             document.getElementById("login-popup-bg").style.visibility = "hidden";
             document.querySelectorAll("#login-form > .account-error")[0].style.display = "none";
             updateAccountOptions();
@@ -275,8 +245,7 @@ document.getElementById("register-form").addEventListener("submit", (ev) => {
     $.post(url, data, function (result, status) {
         hasResponded = true;
         // Handle result
-        if (result.token) {
-            localStorage.setItem('token', result.token);
+        if (result == "0") {
             document.getElementById("register-popup-bg").style.visibility = "hidden";
             document.querySelectorAll("#register-form > .account-error")[0].style.display = "none";
             document.querySelectorAll("#register-form > .account-error")[1].style.display = "none";
@@ -339,19 +308,11 @@ document.getElementById("delete-form").addEventListener("submit", (ev) => {
         password: document.getElementById("delete-password").value
     };
     let hasResponded = false;
-    $.ajax({
-        url: url,
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        data: data,
-        success: (result) => {
+    $.post(url, data, function (result, status){
             hasResponded = true;
             // Handle result
             if (result == "0") {
                 console.log("account deleted");
-                localStorage.removeItem('token');
                 document.getElementById("delete-popup-bg").style.visibility = "hidden";
                 document.querySelectorAll("#delete-form > .account-error")[0].style.display = "none";
                 let notificationBox = document.createElement("notification-box");
@@ -374,7 +335,6 @@ document.getElementById("delete-form").addEventListener("submit", (ev) => {
                 notificationBox.innerHTML = `You are not logged in!`;
                 document.body.appendChild(notificationBox);
             }
-        }
     });
     setTimeout(() => {
         if (!hasResponded) {
