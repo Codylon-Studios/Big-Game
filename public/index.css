@@ -1,6 +1,7 @@
 body {
     font-family: "Cantarell", sans-serif;
     font-size: 1.6vh;
+    background: #f8f8f8
 }
 
 #left-bar {
@@ -29,8 +30,8 @@ body {
 #account-bar {
     width: 15vh;
     height: fit-content;
-    background-color: #b86;
-    border: 0.3vh solid #754;
+    background-color: #fff;
+    border: 0.1vh solid #d4d4d4;
     border-radius: 1vh;
     box-sizing: border-box;
     justify-content: center;
@@ -57,8 +58,8 @@ body {
 #control-bar {
     width: 15vh;
     height: 55vh;
-    background-color: #b86;
-    border: 0.3vh solid #754;
+    background-color: #fff;
+    border: 0.1vh solid #dadada;
     border-radius: 1vh;
     box-sizing: border-box;
 }
@@ -76,12 +77,12 @@ body {
     width: 110vh;
     height: 5vh;
     box-sizing: border-box;
-    background-color: #b86;
-    border: 0.3vh solid #754;
+    background-color: #fff;
+    border: 0.1vh solid #dadada;
     display: flex;
     align-items: center;
-    color: #754;
-    font-weight: 900;
+    color: #444;
+    font-weight: 700;
     padding: 0.5vh;
 }
 
@@ -92,7 +93,7 @@ body {
 }
 
 #topbar a, #bottombar a {
-    color: #754;
+    color: #444;
     text-decoration-thickness: 0.2vh;
 }
 
@@ -151,11 +152,11 @@ body {
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    background-color: #b86;
-    border: 0.3vh solid #754;
+    background-color: #fff;
+    border: 0.1vh solid #dadada;
     position: relative;
-    color: #754;
-    font-weight: 900;
+    color: #444;
+    font-weight: 700;
 }
 
 .playerbox, .timer {
@@ -164,7 +165,7 @@ body {
 
 .playerbox {
     height: 20vh;
-    border-width: 0 0.3vh;
+    border-width: 0 0.1vh;
 }
 
 .playerbox img {
@@ -181,18 +182,19 @@ body {
 }
 
 .stats {
-    font-weight: 700;
+    font-weight: 500;
 }
 
 .timer {
     height: 7vh;
-    border-width: 0.3vh;
+    border-width: 0.1vh;
     font-size: 4.4vh;
+    font-weight: 500;
 }
 
 .moves-chat {
     height: 26vh;
-    border-width: 0 0.3vh;
+    border-width: 0 0.1vh;
 }
 
 .moves-chat-select {
@@ -206,17 +208,17 @@ body {
     justify-content: center;
     display: flex;
     cursor: pointer;
-    background-color: #a75;
-    color: #ddd;
-    border-bottom: 0.2vh solid #754;
+    background-color: #eee;
+    color: #444;
+    border-bottom: 0.1vh solid #cacaca;
 }
 
 .moves-chat-select-moves {
-    border-right: 0.2vh solid #754;
+    border-right: 0.1vh solid #cacaca;
 }
 
 .moves-chat-select-moves:hover, .moves-chat-select-chat:hover {
-    background-color: #964;
+    background-color: #ddd;
 }
 
 .chat {
@@ -226,8 +228,8 @@ body {
 .moves {
     display: flex;
     overflow: scroll;
-    scrollbar-color: #754 transparent;
     max-height: 22.8vh;
+    font-weight: 500;
 }
 
 .moves-number, .moves-first, .moves-second {
@@ -246,12 +248,12 @@ body {
 .messages {
     height: 20vh;
     overflow: scroll;
-    scrollbar-color: #754 transparent;
 }
 
 .message {
     display: flex;
     margin: 0.7vh 1vh 0.7vh 0.3vh;
+    font-weight: 500;
 }
 
 .message img {
@@ -261,48 +263,56 @@ body {
 }
 
 .message span {
-    background-color: #a75;
+    background-color: #eee;
     height: fit-content;
     padding: 0.3vh;
     border-radius: 0.5vh;
-    border: 0.2vh solid #754;
+    border: 0.1vh solid #cacaca;
 }
 
 .new-message {
-    width: 29.4vh;
-    height: 2.6vh;
-    background-color: #a75;
+    width: 29.8vh;
+    height: 2.8vh;
+    background-color: #f8f8f8;
     display: flex;
-    border-top: 0.2vh solid #754;
+    border-top: 0.1vh solid #dadada;
     position: relative;
 }
 
 .new-message-input {
-    width: 25.4vh;
+    width: 26.2vh;
+    height: 2vh;
     margin: 0.2vh;
-    color: #754;
-    border: 0.2vh solid #754;
+    color: #444;
+    border: 0.1vh solid #dadada;
     border-radius: 0.5vh;
     outline: none;
-    background-color: #b86;
-    font-weight: 900;
-    font-size: 1.6vh;
+    background-color: #fff;
+    font-weight: 300;
+    font-size: 1.4vh;
 }
 
 .new-message-input::placeholder {
-    opacity: 1;
+    opacity: 0.5;
 }
 
 .new-message-send {
     cursor: pointer;
-    background-color: #754;
-    padding: 0.3vh;
-    height: fit-content;
+    background-color: #eee;
+    padding: 0.1vh;
+    height: 2vh;
+    width: 2vh;
     color: #ddd;
     border-radius: 0.5vh;
     position: absolute;
     top: 0.2vh;
     right: 0.2vh;
+    border: 0.1vh solid #cacaca;
+    text-align: center;
+}
+
+.new-message-send:hover {
+    background-color: #ddd;
 }
 
 #register-popup-bg, #login-popup-bg, #delete-popup-bg{
