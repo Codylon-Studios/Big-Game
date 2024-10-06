@@ -9,7 +9,12 @@ function fillBoard() {
             field.addEventListener("click", () => {
                 let index = [...board.children].indexOf(field);
                 console.log(index);
-            })
+            });
+            if (piecesConfiguration[8 * column + row] != null) {
+                let img = document.createElement("img");
+                img.src = "images/pieces/" + piecesConfiguration[8 * column + row] + ".png";
+                field.appendChild(img);
+            }
         }
     }
 }
@@ -43,8 +48,13 @@ socket.on('updtplayer', (accounts) => {
     console.log(accounts);
 });
 
+let piecesConfiguration;
+$.getJSON("pieces_configuration.json", (loadedJson) => {
+    piecesConfiguration = loadedJson;
+    fillBoard();
+});
+
 updateAccountOptions();
-fillBoard();
 
 //
 // CLICK ON USER ICON

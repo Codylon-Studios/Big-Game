@@ -119,14 +119,24 @@ body {
     box-sizing: border-box;
 }
 
+.chess-field {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .chess-field.chess-field-black {
     background-color: #333333;
-    border: 5px solid #202020;
+    border: 0.5vh solid #202020;
 }
 
 .chess-field.chess-field-white {
     background-color: #ffefe4;
-    border: 5px solid #ffd4b7;
+    border: 0.5vh solid #ffd4b7;
+}
+
+.chess-field > img {
+    height: 8vh;
 }
 
 #sidebar {
