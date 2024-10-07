@@ -34,9 +34,6 @@ function updateAccountOptions() {
 
 const socket = io();
 
-socket.on('updtplayer', (accounts) => {
-    console.log(accounts);
-});
 
 updateAccountOptions();
 fillBoard();

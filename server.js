@@ -34,8 +34,6 @@ server.listen(3000, () => {
 });
 
 
-// Store session IDs
-const accounts = {};
 // Middleware to parse request bodies
 app.use(express.urlencoded({ extended: true }));
 // Serve static files from the 'public' directory
@@ -46,7 +44,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, //10 days
-  name: 'session',
+  name: 'UserLogin',
 }));
 //Middleware to connect to account.js (and constant.js)
 const account = require('./routes/account');
@@ -56,17 +54,9 @@ app.use('/account', account);
 // Handle socket connection event
 io.on('connection', (socket) => {
   console.log('a user connected');
-  // Add the connected user to the accounts object
-  accounts[socket.id] = {};
-  // Emit 'updtplayer' event to update clients with current player information
-  io.emit('updtplayer', accounts);
-  console.log(accounts);
-  // Handle socket disconnection event
+
   socket.on('disconnect', () => {
     console.log('a user disconnected');
-    // Remove the disconnected user from the accounts object
-    delete accounts[socket.id];
-    console.log(accounts);
   });
 });
 

@@ -11,6 +11,27 @@ const bcrypt = require('bcrypt');
 const express = require('express');
 const router = express.Router();
 
+// Reusable function for username validation
+const isValidUsername = (username) => /^(\w){4,20}$/.test(username);
+
+// Reusable function for password validation
+const isValidPassword = (password, username) => {
+  if (password.length < 6 || password === username) return false;
+  const groups = [/\d/, /[a-z]/, /[A-Z]/].filter((regex) => regex.test(password)).length;
+  return groups >= 2;
+};
+
+// Helper to handle DB connection cleanup
+const withDB = async (callback) => {
+  const client = await pool.connect();
+  try {
+    return await callback(client);
+  } finally {
+    client.release();
+  }
+};
+
+// Authentication check
 router.get('/auth', (req, res) => {
   if (req.session.user) {
     res.json({ authenticated: true, user: req.session.user });
@@ -19,233 +40,102 @@ router.get('/auth', (req, res) => {
   }
 });
 
-// Handle POST request to /logout route
+// Logout route
 router.post('/logout', async (req, res) => {
-  /* Result codes:
-    0: Logout successful
-    1: Internal server error
-    2: Not logged in
-  */
+  if (!req.session.user) return res.status(200).send('2');
+
   try {
-    if (! req.session.user) {
-      res.status(200).send('2');
-      return
-    }
-    const username = req.session.user.username;
-
-    // Connect to the PostgreSQL database
-    const client = await pool.connect();
-    // Update the sessionid to null for the user
-    await client.query('UPDATE accounts SET sessionid = NULL WHERE username = $1', [username]);
-    // Release the client connection
-    client.release();
-
-    // Clear the session ID from the user's session data
+    await withDB(async (client) => {
+      await client.query('UPDATE accounts SET sessionid = NULL WHERE username = $1', [req.session.user.username]);
+    });
     delete req.session.user.sessionid;
-
-    // Destroy the session
     req.session.destroy((err) => {
-      if (err) {
-        console.error('Error destroying session:', err);
-        res.status(200).send('1');
-      } else {
-        // Send success response
-        res.status(200).send('0');
-      }
+      if (err) return res.status(500).send('1');
+      res.status(200).send('0');
     });
   } catch (error) {
-    // If an error occurs, log it and respond with internal server error message
     console.error('Error logging out:', error);
-    res.status(200).send('1');
+    res.status(500).send('1');
   }
 });
 
+// Register route
 router.post('/register', async (req, res) => {
-  /* Result codes:
-    0: Registration successful
-    1: Internal server error
-    2: Passwords don't match
-    3: Username already used
-    4: Username does not fulfil conditions (Only contain letters, numbers and underscores; 4 to 20 characters)
-    5: Password does not fulfil conditions (At least 6 characters of at least 2 groups, not the username)
-  */
-  const username = req.body.username;
-  const password = req.body.password;
-  const passwordRepeat = req.body.passwordRepeat;
+  const { username, password, passwordRepeat } = req.body;
 
-  // List of all errors, these will be returned
-  let errors = []
+  if (password !== passwordRepeat) return res.status(200).send(['2']);
+  if (!isValidUsername(username)) return res.status(200).send(['4']);
+  if (!isValidPassword(password, username)) return res.status(200).send(['5']);
 
-  if (password != passwordRepeat){
-    errors.push("2")
-  }
   try {
-    // Connect to the PostgreSQL database
-    const client = await pool.connect();
-    // Hash the password before storing it in the database
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    await withDB(async (client) => {
+      const userExists = await client.query('SELECT 1 FROM accounts WHERE username = $1', [username]);
+      if (userExists.rows.length > 0) return res.status(200).send(['3']);
 
-    // Check if the username consists only of letters, numbers and underscore and is between 4 and 20 characters long
-    let usernameRegexp = /^([a-z]|[A-Z]|\d|_)+$/
-    if (! (usernameRegexp.test(username) && username.length >= 4 && username.length <= 20)) {
-      errors.push("4")
-      res.status(200).send(errors)
-      return
-    }
-
-    // Check if the password is at least 6 characters of at least 2 groups long and not the username
-    if (password.length < 6) {
-      errors.push("5");
-    }
-    else if (password == username) {
-      errors.push("5");
-    }
-    else {
-      let passwordGroups = 0;
-      if (/\d/.test(password)) {passwordGroups += 1};
-      if (/[a-z]/.test(password)) {passwordGroups += 1};
-      if (/[A-Z]/.test(password)) {passwordGroups += 1};
-      if (passwordGroups == 0) {
-        errors.push("5");
-      }
-      else if (passwordGroups == 1) {
-        let passwordCopy = password;
-        passwordCopy.replaceAll(/\d/g, "");
-        passwordCopy.replaceAll(/[a-z]/g, "");
-        passwordCopy.replaceAll(/[A-Z]/g, "");
-        if (passwordCopy.length == 0) {
-          errors.push("5");
-        }
-      }
-    }
-    
-
-    // Check if username is already in use
-    let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
-    if (result.rows.length != 0) {
-      errors.push("3")
-    }
-    else if (errors.length === 0) {
-      // Insert a new row into the accounts table with the provided username and hashed password
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
       await client.query('INSERT INTO accounts (username, password) VALUES ($1, $2)', [username, hashedPassword]);
-      //Inserts current socketid
-      const sessionid = req.socket.id;
-      await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
-      client.release();
+
       req.session.user = { username };
-      res.status(200).send("0");
-      return
-    }
-    res.status(200).send(errors)
+      res.status(200).send('0');
+    });
   } catch (error) {
-    // If an error occurs, log it and respond with internal server error message
-    console.error('Error while storing user data', error);
-    res.status(200).send('1');
+    console.error('Error while storing user data:', error);
+    res.status(500).send('1');
   }
 });
 
+// Login route
 router.post('/login', async (req, res) => {
-  /* Result codes:
-    0: Login successful
-    1: Internal server error
-    2: Incorrect username or password
-  */
   const { username, password } = req.body;
 
-  // Check if the username consists only of letters, numbers and underscore and is between 4 and 20 characters long
-  let usernameRegexp = /^([a-z]|[A-Z]|\d|_)+$/
-  if (! (usernameRegexp.test(username) && username.length >= 4 && username.length <= 20)) {
-    res.status(200).send("2");
-    return
-  }
+  if (!isValidUsername(username)) return res.status(200).send('2');
 
   try {
-    // Connect to the PostgreSQL database
-    const client = await pool.connect();
-    // Query the database to retrieve the user with the given username
-    let result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
-    // If no user found with the given username, give error
-    if (result.rows.length === 0) {
-      res.status(200).send("2");
-      return;
-    }
-    // Get the user data from the query result
-    const user = result.rows[0];
-    // Release the client connection
-    client.release();
-    // Compare the provided password with the hashed password stored in the database
-    const match = await bcrypt.compare(password, user.password);
-    // If passwords match, update the session ID in the database and respond with success message
-    if (match) {
-      const sessionid = req.sessionID;
-      await pool.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [sessionid, username]);
+    await withDB(async (client) => {
+      const result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
+      if (result.rows.length === 0) return res.status(200).send('2');
+
+      const user = result.rows[0];
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) return res.status(200).send('2');
+
+      await client.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [req.sessionID, username]);
       req.session.user = { username };
-      res.status(200).send("0");
-    } else {
-      // If passwords don't match, respond with error message
-      res.status(200).send("2");
-      return;
-    }
+      res.status(200).send('0');
+    });
   } catch (error) {
-    // If an error occurs, log it and respond with internal server error message
     console.error('Error authenticating user:', error);
-    res.status(200).send('1');
+    res.status(500).send('1');
   }
 });
 
-
+// Delete account route
 router.post('/delete', async (req, res) => {
-  /* Result codes:
-    0: Deletion successful
-    1: Internal server error
-    2: Incorrect username or password
-    3: Not logged in
-  */
-  if (! req.session.user) {
-    res.status(200).send('3');
-    return
-  }
-  const username = req.session.user.username;
-  const password = req.body.password;
+  if (!req.session.user) return res.status(200).send('3');
+
+  const { username } = req.session.user;
+  const { password } = req.body;
 
   try {
-    // Connect to the PostgreSQL database
-    const client = await pool.connect();
-    // Query the database to retrieve the user with the given username
-    const result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
-    // Release the client connection
-    client.release();
-    // If no user found with the given username, give error
-    if (result.rows.length === 0) {
-      res.status(200).send("2");
-      return;
-    }
-    // Get the user data from the query result
-    const user = result.rows[0];
-    // Compare the provided password with the hashed password stored in the database
-    const match = await bcrypt.compare(password, user.password);
-    // If passwords match, delete the account and respond with success message
-    if (match) {
-      await pool.query('DELETE FROM accounts WHERE username = $1', [username]);
+    await withDB(async (client) => {
+      const result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
+      if (result.rows.length === 0) return res.status(200).send('2');
+
+      const user = result.rows[0];
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) return res.status(200).send('2');
+
+      await client.query('DELETE FROM accounts WHERE username = $1', [username]);
       req.session.destroy((err) => {
-        if (err) {
-          console.error('Error destroying session:', err);
-          res.status(200).send('1');
-        } else {
-          res.status(200).send("0");
-        }
+        if (err) return res.status(500).send('1');
+        res.status(200).send('0');
       });
-      return;
-    } else {
-      // If passwords don't match, respond with error message
-      res.status(200).send("2");
-      return;
-    }
+    });
   } catch (error) {
-    // If an error occurs, log it and respond with internal server error message
-    console.error('Error authenticating user:', error);
-    res.status(200).send('1');
+    console.error('Error deleting account:', error);
+    res.status(500).send('1');
   }
 });
 
 module.exports = router;
+
