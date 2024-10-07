@@ -4,8 +4,8 @@
 // DON'T TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING
 //
 // Installing manual: https://flint-zenith-b13.notion.site/424c21ffbb5648f4b674cb9a1472c43a?v=8377e7b70ae842dc91e2261c80e4ac75
-// Copyright (c) 2024 Codylon Studios.
 //
+// Copyright (c) 2024 Codylon Studios.
 const { pool, saltRounds } = require('./constant');
 const bcrypt = require('bcrypt');
 const express = require('express');
@@ -42,16 +42,12 @@ router.get('/auth', (req, res) => {
 
 // Logout route
 router.post('/logout', async (req, res) => {
-  if (!req.session.user) return res.status(200).send('2');
+  if (!req.session.user) return res.status(200).send('2');  // Not logged in
 
   try {
-    await withDB(async (client) => {
-      await client.query('UPDATE accounts SET sessionid = NULL WHERE username = $1', [req.session.user.username]);
-    });
-    delete req.session.user.sessionid;
     req.session.destroy((err) => {
-      if (err) return res.status(500).send('1');
-      res.status(200).send('0');
+      if (err) return res.status(500).send('1');  // Internal server error
+      res.status(200).send('0');  // Logout successful
     });
   } catch (error) {
     console.error('Error logging out:', error);
@@ -70,17 +66,17 @@ router.post('/register', async (req, res) => {
   try {
     await withDB(async (client) => {
       const userExists = await client.query('SELECT 1 FROM accounts WHERE username = $1', [username]);
-      if (userExists.rows.length > 0) return res.status(200).send(['3']);
+      if (userExists.rows.length > 0) return res.status(200).send(['3']);  // Username already used
 
       const hashedPassword = await bcrypt.hash(password, saltRounds);
       await client.query('INSERT INTO accounts (username, password) VALUES ($1, $2)', [username, hashedPassword]);
 
       req.session.user = { username };
-      res.status(200).send('0');
+      res.status(200).send('0');  // Registration successful
     });
   } catch (error) {
     console.error('Error while storing user data:', error);
-    res.status(500).send('1');
+    res.status(500).send('1');  // Internal server error
   }
 });
 
@@ -88,30 +84,29 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  if (!isValidUsername(username)) return res.status(200).send('2');
+  if (!isValidUsername(username)) return res.status(200).send('2');  // Invalid username
 
   try {
     await withDB(async (client) => {
       const result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
-      if (result.rows.length === 0) return res.status(200).send('2');
+      if (result.rows.length === 0) return res.status(200).send('2');  // Username or password incorrect
 
       const user = result.rows[0];
       const match = await bcrypt.compare(password, user.password);
-      if (!match) return res.status(200).send('2');
+      if (!match) return res.status(200).send('2');  // Incorrect password
 
-      await client.query('UPDATE accounts SET sessionid = $1 WHERE username = $2', [req.sessionID, username]);
       req.session.user = { username };
-      res.status(200).send('0');
+      res.status(200).send('0');  // Login successful
     });
   } catch (error) {
     console.error('Error authenticating user:', error);
-    res.status(500).send('1');
+    res.status(500).send('1');  // Internal server error
   }
 });
 
 // Delete account route
 router.post('/delete', async (req, res) => {
-  if (!req.session.user) return res.status(200).send('3');
+  if (!req.session.user) return res.status(200).send('3');  // Not logged in
 
   const { username } = req.session.user;
   const { password } = req.body;
@@ -119,23 +114,22 @@ router.post('/delete', async (req, res) => {
   try {
     await withDB(async (client) => {
       const result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
-      if (result.rows.length === 0) return res.status(200).send('2');
+      if (result.rows.length === 0) return res.status(200).send('2');  // Incorrect username or password
 
       const user = result.rows[0];
       const match = await bcrypt.compare(password, user.password);
-      if (!match) return res.status(200).send('2');
+      if (!match) return res.status(200).send('2');  // Incorrect password
 
       await client.query('DELETE FROM accounts WHERE username = $1', [username]);
       req.session.destroy((err) => {
-        if (err) return res.status(500).send('1');
-        res.status(200).send('0');
+        if (err) return res.status(500).send('1');  // Internal server error
+        res.status(200).send('0');  // Deletion successful
       });
     });
   } catch (error) {
     console.error('Error deleting account:', error);
-    res.status(500).send('1');
+    res.status(500).send('1');  // Internal server error
   }
 });
 
 module.exports = router;
-
