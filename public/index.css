@@ -54,6 +54,22 @@ body {
     background-color: #37bcff;
 }
 
+#account-delete-button {
+    width: 20%;
+    padding: 0.5vh;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 0.5vh;
+    color: white;
+    border: none;
+    background-color: #f55;
+    display: block;
+}
+
+#account-delete-button:hover {
+    background-color: #ee4b4b;
+}
+
 #control-bar {
     width: 15vh;
     height: 55vh;
@@ -63,7 +79,23 @@ body {
     box-sizing: border-box;
 }
 
-#game {
+#control-bar > div {
+    height: 5vh;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+#control-bar > div:hover {
+    background-color: #a75;
+    cursor: pointer;
+}
+
+#control-bar > div:hover:nth-child(1) {
+    border-radius: 0.7vh 0.7vh 0 0;
+}
+
+.main-window {
     height: 90vh;
     width: 110vh;
     right: calc((100vw - 125vh) / 3);
@@ -303,6 +335,14 @@ body {
     position: absolute;
     top: 0.2vh;
     right: 0.2vh;
+}
+
+#settings {
+    background-color: #b86;
+    border: 0.3vh solid #754;
+    display: none;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 #register-popup-bg, #login-popup-bg, #delete-popup-bg{
