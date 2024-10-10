@@ -47,6 +47,7 @@ router.post('/logout', async (req, res) => {
   try {
     req.session.destroy((err) => {
       if (err) return res.status(500).send('1');  // Internal server error
+      res.clearCookie('UserLogin');
       res.status(200).send('0');  // Logout successful
     });
   } catch (error) {
@@ -123,6 +124,7 @@ router.post('/delete', async (req, res) => {
       await client.query('DELETE FROM accounts WHERE username = $1', [username]);
       req.session.destroy((err) => {
         if (err) return res.status(500).send('1');  // Internal server error
+        res.clearCookie('UserLogin');
         res.status(200).send('0');  // Deletion successful
       });
     });
