@@ -10,7 +10,7 @@
 const express = require('express');
 const { createServer } = require('http');
 const { join } = require('path');
-const bodyParser = require('body-parser');
+const session = require('express-session');
 
 
 // Initialize Express application
@@ -34,37 +34,33 @@ server.listen(3000, () => {
 });
 
 
-// Store session IDs
-const accounts = {};
 // Middleware to parse request bodies
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
+//configure session
+app.use(session({
+  secret: "notsecret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, //10 days
+  name: 'UserLogin',
+}));
 //Middleware to connect to account.js (and constant.js)
 const account = require('./routes/account');
 app.use('/account', account);
 
+
 // Handle socket connection event
 io.on('connection', (socket) => {
   console.log('a user connected');
-  // Add the connected user to the accounts object
-  accounts[socket.id] = {};
-  // Emit 'updtplayer' event to update clients with current player information
-  io.emit('updtplayer', accounts);
-  console.log(accounts);
-  // Handle socket disconnection event
+
   socket.on('disconnect', () => {
     console.log('a user disconnected');
-    // Remove the disconnected user from the accounts object
-    delete accounts[socket.id];
-    console.log(accounts);
   });
 });
 
 // Serve index.html when root URL is accessed
-app.get('/', (req, res, next) => {
+app.get('/', (res) => {
   res.sendFile(join(__dirname + '/public/index.html'));
 });
-
-// Handle POST request to root route
-app.post('/', async (req, res) => { });
