@@ -104,6 +104,39 @@ body {
     border-radius: 1vh;
 }
 
+#play-select {
+    background-color: #b86;
+    border: 0.3vh solid #754;
+    display: none;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#play-select-grid {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(2, 30vh);
+    gap: 5vh;
+    width: fit-content;
+}
+
+.play-select-option {
+    background-color: #a75;
+    border: 0.3vh solid #754;
+    padding: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+    height: 20vh;
+    width: 30vh;
+}
+
+#game {
+    display: none;
+}
+
 #topbar, #bottombar {
     width: 110vh;
     height: 5vh;

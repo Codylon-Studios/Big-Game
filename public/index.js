@@ -72,16 +72,68 @@ importHtmlPromise.then(() => {
         piecesConfiguration = loadedJson;
         fillBoard();
     });
-})
+});
 updateAccountOptions();
 
+let gameMode = 0;
+
 importHtmlPromise.then(() => {
+    //
+    // INITIALISE VIEW
+    //
+    if (gameMode == 0) {
+        document.getElementById("play-select").style.display = "flex";
+        document.getElementById("game").style.display = "none";
+        document.getElementById("settings").style.display = "none";
+    }
+    else {
+        document.getElementById("play-select").style.display = "none";
+        document.getElementById("game").style.display = "block";
+        document.getElementById("settings").style.display = "none";
+    }
+
+    //
+    // CLICK ON PLAY SELECT OPTION
+    //
+    document.getElementById("play-select-option-1").addEventListener("click", () => {
+        gameMode = 1;
+        console.log("Gamemode changed to 1");
+        document.getElementById("game").style.display = "block";
+        document.getElementById("settings").style.display = "none";
+    });
+    document.getElementById("play-select-option-2").addEventListener("click", () => {
+        gameMode = 2;
+        console.log("Gamemode changed to 2");
+        document.getElementById("game").style.display = "block";
+        document.getElementById("settings").style.display = "none";
+    });
+    document.getElementById("play-select-option-3").addEventListener("click", () => {
+        gameMode = 3;
+        console.log("Gamemode changed to 3");
+        document.getElementById("game").style.display = "block";
+        document.getElementById("settings").style.display = "none";
+    });
+    document.getElementById("play-select-option-4").addEventListener("click", () => {
+        gameMode = 4;
+        console.log("Gamemode changed to 4");
+        document.getElementById("game").style.display = "block";
+        document.getElementById("settings").style.display = "none";
+    });
+
     //
     // CONTROL BAR
     //
     document.getElementById("control-bar-game").addEventListener("click", () => {
-        document.getElementById("game").style.display = "block";
-        document.getElementById("settings").style.display = "none";
+        if (gameMode == 0) {
+            document.getElementById("play-select").style.display = "flex";
+            document.getElementById("game").style.display = "none";
+            document.getElementById("settings").style.display = "none";
+        }
+        else {
+            document.getElementById("play-select").style.display = "none";
+            document.getElementById("game").style.display = "block";
+            document.getElementById("settings").style.display = "none";
+        }
     });
     document.getElementById("control-bar-settings").addEventListener("click", () => {
         document.getElementById("game").style.display = "none";
