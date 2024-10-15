@@ -1,3 +1,4 @@
+//chesssboard
 function fillBoard() {
     let board = document.getElementById("chess-board");
     for (let column = 0; column < 8; column++) {
@@ -19,25 +20,19 @@ function fillBoard() {
     }
 }
 
+//sidebar options
 function updateAccountOptions() {
-    $.ajax({
-        url: '/account/auth',
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        success: (data) => {
-            if (data.authenticated) {
-                console.log("auth");
-                document.getElementById("account-login-button").style.display = "none";
-                document.getElementById("account-register-button").style.display = "none";
-                document.getElementById("account-logout-button").style.display = "block";
-            } else {
-                console.log("not auth");
-                document.getElementById("account-login-button").style.display = "block";
-                document.getElementById("account-register-button").style.display = "block";
-                document.getElementById("account-logout-button").style.display = "none";
-            }
+    $.get('/account/auth', (data) => {
+        if (data.authenticated) {
+            console.log("auth");
+            document.getElementById("account-login-button").style.display = "none";
+            document.getElementById("account-register-button").style.display = "none";
+            document.getElementById("account-logout-button").style.display = "block";
+        } else {
+            console.log("not auth");
+            document.getElementById("account-login-button").style.display = "block";
+            document.getElementById("account-register-button").style.display = "block";
+            document.getElementById("account-logout-button").style.display = "none";
         }
     });
 }
@@ -140,106 +135,6 @@ importHtmlPromise.then(() => {
         document.getElementById("settings").style.display = "block";
     });
 
-    //
-    // CLICK ON USER ICON
-    //
-    document.getElementById("user").addEventListener("click", () => {
-        $.ajax({
-            url: '/account/auth',
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            success: (data) => {
-                if (data.authenticated) {
-                    console.log("auth");
-                    document.getElementById("account-select-login").style.display = "none";
-                    document.getElementById("account-select-register").style.display = "none";
-                    document.getElementById("account-select-logout").style.display = "block";
-                    document.getElementById("account-select-delete").style.display = "block";
-                } else {
-                    console.log("not auth");
-                    document.getElementById("account-select-login").style.display = "block";
-                    document.getElementById("account-select-register").style.display = "block";
-                    document.getElementById("account-select-logout").style.display = "none";
-                    document.getElementById("account-select-delete").style.display = "none";
-                }
-                document.getElementById("account-select").style.visibility = "visible";
-            }
-        });
-    });
-
-    //
-    // HIDE DROPDOWN IF USER DOESNT CLICK ON USER ICON
-    //
-    window.addEventListener("click", (ev) => {
-        if (ev.target != document.getElementById("user")) {
-            document.getElementById("account-select").style.visibility = "hidden";
-        }
-    });
-
-    //
-    // LOGIN - REGISTER - LOGOUT - DELETE
-    //
-    document.getElementById("account-select-login").addEventListener("click", () => {
-        document.getElementById("login-popup-bg").style.visibility = "visible";
-        document.getElementById("account-select").style.visibility = "hidden";
-    });
-    document.getElementById("account-select-register").addEventListener("click", () => {
-        document.getElementById("register-popup-bg").style.visibility = "visible";
-        document.getElementById("account-select").style.visibility = "hidden";
-    });
-    document.getElementById("account-select-logout").addEventListener("click", () => {
-        // Send request to server
-        let url = "/account/logout";
-        let data = {};
-        let hasResponded = false;
-        $.ajax({
-            url: url,
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            data: data,
-            success: (result) => {
-                hasResponded = true;
-                // Handle result
-                if (result == "0") {
-                    console.log("logged out");
-                    localStorage.removeItem('token');
-                    let notificationBox = document.createElement("notification-box");
-                    notificationBox.setAttribute("color", "blue");
-                    notificationBox.innerHTML = `You have been logged out.`;
-                    document.body.appendChild(notificationBox);
-                }
-                else if (result == "1") {
-                    console.log("error");
-                    let notificationBox = document.createElement("notification-box");
-                    notificationBox.setAttribute("color", "red");
-                    notificationBox.innerHTML = `An error has occurred on the server side!`
-                    document.body.appendChild(notificationBox);
-                }
-                else {
-                    let notificationBox = document.createElement("notification-box");
-                    notificationBox.setAttribute("color", "red");
-                    notificationBox.innerHTML = `You are not logged in!`;
-                    document.body.appendChild(notificationBox);
-                }
-            }
-        });
-        setTimeout(() => {
-            if (!hasResponded) {
-                let notificationBox = document.createElement("notification-box");
-                notificationBox.setAttribute("color", "red");
-                notificationBox.innerHTML = `The server didn't respond in time!`;
-                document.body.appendChild(notificationBox);
-            }
-        }, 5000);
-    });
-    document.getElementById("account-select-delete").addEventListener("click", () => {
-        document.getElementById("delete-popup-bg").style.visibility = "visible";
-        document.getElementById("account-select").style.visibility = "hidden";
-    });
 
     document.getElementById("account-login-button").addEventListener("click", () => {
         document.getElementById("login-popup-bg").style.visibility = "visible";
@@ -254,38 +149,29 @@ importHtmlPromise.then(() => {
         let url = "/account/logout";
         let data = {};
         let hasResponded = false;
-        $.ajax({
-            url: url,
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            data: data,
-            success: (result) => {
-                hasResponded = true;
-                // Handle result
-                if (result == "0") {
-                    console.log("logged out");
-                    localStorage.removeItem('token');
-                    updateAccountOptions();
-                    let notificationBox = document.createElement("notification-box");
-                    notificationBox.setAttribute("color", "blue");
-                    notificationBox.innerHTML = `You have been logged out.`;
-                    document.body.appendChild(notificationBox);
-                }
-                else if (result == "1") {
-                    console.log("error");
-                    let notificationBox = document.createElement("notification-box");
-                    notificationBox.setAttribute("color", "red");
-                    notificationBox.innerHTML = `An error has occurred on the server side!`
-                    document.body.appendChild(notificationBox);
-                }
-                else {
-                    let notificationBox = document.createElement("notification-box");
-                    notificationBox.setAttribute("color", "red");
-                    notificationBox.innerHTML = `You are not logged in!`;
-                    document.body.appendChild(notificationBox);
-                }
+        $.post(url, data, function (result, status) {
+            hasResponded = true;
+            // Handle result
+            if (result == "0") {
+                console.log("logged out");
+                updateAccountOptions();
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "blue");
+                notificationBox.innerHTML = `You have been logged out.`;
+                document.body.appendChild(notificationBox);
+            }
+            else if (result == "1") {
+                console.log("error");
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `An error has occurred on the server side!`
+                document.body.appendChild(notificationBox);
+            }
+            else {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `You are not logged in!`;
+                document.body.appendChild(notificationBox);
             }
         });
         setTimeout(() => {
@@ -297,10 +183,6 @@ importHtmlPromise.then(() => {
             }
         }, 5000);
     });
-    document.getElementById("account-delete-button").addEventListener("click", () => {
-        document.getElementById("delete-popup-bg").style.visibility = "visible";
-        document.getElementById("account-select").style.visibility = "hidden";
-    });
 
     document.querySelectorAll(".popup-close").forEach((element) => {
         element.addEventListener("click", () => {
@@ -309,6 +191,7 @@ importHtmlPromise.then(() => {
             document.getElementById("delete-popup-bg").style.visibility = "hidden";
         });
     })
+
 
     //
     // LOGIN FORM
@@ -325,8 +208,7 @@ importHtmlPromise.then(() => {
         $.post(url, data, function (result, status) {
             hasResponded = true;
             // Handle result
-            if (result.token) {
-                localStorage.setItem('token', result.token);
+            if (result == "0") {
                 document.getElementById("login-popup-bg").style.visibility = "hidden";
                 document.querySelectorAll("#login-form > .account-error")[0].style.display = "none";
                 updateAccountOptions();
@@ -372,13 +254,12 @@ importHtmlPromise.then(() => {
         $.post(url, data, function (result, status) {
             hasResponded = true;
             // Handle result
-            if (result.token) {
-                localStorage.setItem('token', result.token);
+            if (result == "0") {
                 document.getElementById("register-popup-bg").style.visibility = "hidden";
                 document.querySelectorAll("#register-form > .account-error")[0].style.display = "none";
                 document.querySelectorAll("#register-form > .account-error")[1].style.display = "none";
                 updateAccountOptions();
-                
+
                 let notificationBox = document.createElement("notification-box");
                 notificationBox.setAttribute("color", "green");
                 notificationBox.innerHTML = `Registered you successfully as ${document.getElementById("register-username").value}!`;
@@ -436,41 +317,32 @@ importHtmlPromise.then(() => {
             password: document.getElementById("delete-password").value
         };
         let hasResponded = false;
-        $.ajax({
-            url: url,
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            data: data,
-            success: (result) => {
-                hasResponded = true;
-                // Handle result
-                if (result == "0") {
-                    console.log("account deleted");
-                    localStorage.removeItem('token');
-                    document.getElementById("delete-popup-bg").style.visibility = "hidden";
-                    document.querySelectorAll("#delete-form > .account-error")[0].style.display = "none";
-                    let notificationBox = document.createElement("notification-box");
-                    notificationBox.setAttribute("color", "blue");
-                    notificationBox.innerHTML = `Your account has been deleted.`;
-                    document.body.appendChild(notificationBox);
-                }
-                else if (result == "1") {
-                    let notificationBox = document.createElement("notification-box");
-                    notificationBox.setAttribute("color", "green");
-                    notificationBox.innerHTML = `An error has occurred on the server side!`;
-                    document.body.appendChild(notificationBox);
-                }
-                else if (result == "2") {
-                    document.querySelectorAll("#delete-form > .account-error")[0].style.display = "block";
-                }
-                else if (result == "3") {
-                    let notificationBox = document.createElement("notification-box");
-                    notificationBox.setAttribute("color", "red");
-                    notificationBox.innerHTML = `You are not logged in!`;
-                    document.body.appendChild(notificationBox);
-                }
+        $.post(url, data, function (result, status) {
+            hasResponded = true;
+            // Handle result
+            if (result == "0") {
+                console.log("account deleted");
+                document.getElementById("delete-popup-bg").style.visibility = "hidden";
+                document.querySelectorAll("#delete-form > .account-error")[0].style.display = "none";
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "blue");
+                notificationBox.innerHTML = `Your account has been deleted.`;
+                document.body.appendChild(notificationBox);
+            }
+            else if (result == "1") {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "green");
+                notificationBox.innerHTML = `An error has occurred on the server side!`;
+                document.body.appendChild(notificationBox);
+            }
+            else if (result == "2") {
+                document.querySelectorAll("#delete-form > .account-error")[0].style.display = "block";
+            }
+            else if (result == "3") {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `You are not logged in!`;
+                document.body.appendChild(notificationBox);
             }
         });
         setTimeout(() => {
