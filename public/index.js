@@ -77,42 +77,40 @@ importHtmlPromise.then(() => {
     // INITIALISE VIEW
     //
     if (gameMode == 0) {
-        document.getElementById("play-select").style.display = "flex";
+        document.getElementById("play-select").style.display = "block";
         document.getElementById("game").style.display = "none";
-        document.getElementById("settings").style.display = "none";
     }
     else {
         document.getElementById("play-select").style.display = "none";
         document.getElementById("game").style.display = "block";
-        document.getElementById("settings").style.display = "none";
     }
+    document.getElementById("settings").style.display = "none";
+    document.getElementById("profile").style.display = "none";
 
     //
     // CLICK ON PLAY SELECT OPTION
     //
+    document.querySelectorAll(".play-select-option").forEach((element) => {
+        element.addEventListener("click", () => {
+            document.getElementById("game").style.display = "block";
+            document.getElementById("play-select").style.display = "none";
+        })
+    })
     document.getElementById("play-select-option-1").addEventListener("click", () => {
         gameMode = 1;
         console.log("Gamemode changed to 1");
-        document.getElementById("game").style.display = "block";
-        document.getElementById("settings").style.display = "none";
     });
     document.getElementById("play-select-option-2").addEventListener("click", () => {
         gameMode = 2;
         console.log("Gamemode changed to 2");
-        document.getElementById("game").style.display = "block";
-        document.getElementById("settings").style.display = "none";
     });
     document.getElementById("play-select-option-3").addEventListener("click", () => {
         gameMode = 3;
         console.log("Gamemode changed to 3");
-        document.getElementById("game").style.display = "block";
-        document.getElementById("settings").style.display = "none";
     });
     document.getElementById("play-select-option-4").addEventListener("click", () => {
         gameMode = 4;
         console.log("Gamemode changed to 4");
-        document.getElementById("game").style.display = "block";
-        document.getElementById("settings").style.display = "none";
     });
 
     //
@@ -120,29 +118,36 @@ importHtmlPromise.then(() => {
     //
     document.getElementById("control-bar-game").addEventListener("click", () => {
         if (gameMode == 0) {
-            document.getElementById("play-select").style.display = "flex";
+            document.getElementById("play-select").style.display = "block";
             document.getElementById("game").style.display = "none";
-            document.getElementById("settings").style.display = "none";
         }
         else {
             document.getElementById("play-select").style.display = "none";
             document.getElementById("game").style.display = "block";
-            document.getElementById("settings").style.display = "none";
         }
+        document.getElementById("settings").style.display = "none";
+        document.getElementById("profile").style.display = "none";
     });
     document.getElementById("control-bar-settings").addEventListener("click", () => {
+        document.getElementById("play-select").style.display = "none";
         document.getElementById("game").style.display = "none";
         document.getElementById("settings").style.display = "block";
+        document.getElementById("profile").style.display = "none";
+    });
+
+    document.getElementById("user-icon").addEventListener("click", () => {
+        document.getElementById("play-select").style.display = "none";
+        document.getElementById("game").style.display = "none";
+        document.getElementById("settings").style.display = "none";
+        document.getElementById("profile").style.display = "block";
     });
 
 
     document.getElementById("account-login-button").addEventListener("click", () => {
         document.getElementById("login-popup-bg").style.visibility = "visible";
-        document.getElementById("account-select").style.visibility = "hidden";
     });
     document.getElementById("account-register-button").addEventListener("click", () => {
         document.getElementById("register-popup-bg").style.visibility = "visible";
-        document.getElementById("account-select").style.visibility = "hidden";
     });
     document.getElementById("account-logout-button").addEventListener("click", () => {
         // Send request to server
@@ -183,6 +188,9 @@ importHtmlPromise.then(() => {
             }
         }, 5000);
     });
+    document.getElementById("account-delete-button").addEventListener("click", () => {
+        document.getElementById("delete-popup-bg").style.visibility = "visible";
+    });
 
     document.querySelectorAll(".popup-close").forEach((element) => {
         element.addEventListener("click", () => {
@@ -190,7 +198,7 @@ importHtmlPromise.then(() => {
             document.getElementById("register-popup-bg").style.visibility = "hidden";
             document.getElementById("delete-popup-bg").style.visibility = "hidden";
         });
-    })
+    });
 
 
     //
