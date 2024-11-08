@@ -21,9 +21,39 @@ body {
     margin-left: 2.5vh;
 }
 
+#user-icon:hover > img {
+    display: none;
+}
+#user-icon:hover > div {
+    display: flex;
+}
+
+#user-icon:not(:hover) > img {
+    display: block;
+}
+
+#user-icon:not(:hover) > div {
+    display: none;
+}
+
 #user-icon > img {
     width: 10vh;
     height: 10vh;
+}
+
+#user-icon > div {
+    width: 10vh;
+    height: 10vh;
+    justify-content: center;
+    align-items: center;
+    color: #754;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 2vh;
+}
+
+#user-icon > div > span {
+    text-align: center;
 }
 
 #account-bar {
@@ -110,6 +140,9 @@ body {
     display: none;
     padding: 10px;
     box-sizing: border-box;
+}
+
+#play-select-grid-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -376,6 +409,22 @@ body {
     display: none;
     padding: 10px;
     box-sizing: border-box;
+}
+
+#profile {
+    background-color: #b86;
+    border: 0.3vh solid #754;
+    display: none;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.window-title {
+    color: #754;
+    font-size: 4vh;
+    text-align: center;
+    margin-bottom: 1vh;
+    display: block;
 }
 
 #register-popup-bg, #login-popup-bg, #delete-popup-bg{
