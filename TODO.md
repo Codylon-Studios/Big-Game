@@ -1,4 +1,6 @@
-### 1. *Gameplay*
+Priority:
+   - [ ] *Change Name*
+   - [ ] *Change Password*
    - [ ] *Start Game Logic*
    - [ ] *Play Game Logic*
    - [ ] *Databases*
@@ -11,9 +13,6 @@
    - [ ] *Game Analysis*: Enable automatic analysis after the game to receive a detailed breakdown of moves, blunders, and suggestions for improvement.
 
 ### 3. *Profile Settings*
-   - [ ] *Change Name*
-   - [ ] *Change Password*
-   - [ ] *Delete Account*
    - [ ] *Profile Customization*: Upload avatars, set display names, update bios
    - [ ] *Password & Security*: Change password, two-factor authentication (2FA), account recovery options.
    - [ ] *Privacy Settings*: Control who can view your profile, game history, or send messages.
@@ -33,7 +32,6 @@
    - [ ] *Matchmaking Preferences*: Choose rating range, opponent skill level, or preferred time controls.
    - [ ] *Match Reminders*: Receive automatic reminders for upcoming tournaments or challenge matches.
    - [ ] *Live Spectator Mode*: Option to watch live games or tournaments with commentary.
-   - [ ] *Fair Play Settings*: Anti-cheating protocols, randomization options (e.g., to prevent opening book usage).
 
 ### 6. *Chess Puzzle & Training Settings*
    - [ ] *Puzzle Difficulty*: Set a difficulty level for puzzles or allow the system to auto-adjust based on progress.
@@ -50,9 +48,7 @@
 
 ### 8. *Accessibility Settings*
    - [ ] *Colorblind Mode*: Provide high-contrast color schemes or other color adjustments for accessibility.
-   - [ ] *Screen Reader Support*: Enable compatibility with screen readers for visually impaired users.
    - [ ] *Large Text Mode*: Option to increase text size for better readability.
-   - [ ] *Keyboard Shortcuts*: Enable keyboard shortcuts for quicker game navigation or moves.
    - [ ] *Move Hints*: Turn on or off move suggestions for beginners or those seeking additional guidance.
 
    - [ ] *Game History*: Track your played games, wins, losses, draws, and see detailed stats by game mode or time control.
@@ -68,5 +64,4 @@
    - [ ] *Third-Party Analysis Tools*: Integrate with external chess analysis websites or tools.
 
    - [ ] *Dark Mode*: Toggle between dark and light themes for the interface.
-   - [ ] *Game Auto-Start*: Automatically start games when an opponent accepts your challenge or set a delay time.
    - [ ] *Event Countdown Timers*: Show countdowns for upcoming events or time-limited offers, like discounts for premium memberships.
