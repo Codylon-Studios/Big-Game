@@ -134,4 +134,60 @@ router.post('/delete', async (req, res) => {
   }
 });
 
+router.post('/changename', async (req, res) => {
+  if (!req.session.user) return res.status(200).send('4');  // Not logged in
+
+  const { username } = req.session.user;
+  const { password, newUsername } = req.body;
+
+  try {
+    await withDB(async (client) => {
+      const result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
+
+      const user = result.rows[0];
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) return res.status(200).send('2');  // Incorrect password
+
+      const newUserExists = await client.query('SELECT 1 FROM accounts WHERE username = $1', [newUsername]);
+      if (newUserExists.rows.length > 0) return res.status(200).send(['3']);  // Username already used
+
+      await client.query('UPDATE accounts SET username = $1 WHERE username = $2', [newUsername, username]);
+      
+      res.status(200).send('0'); // Name change successful
+    });
+  } catch (error) {
+    console.error('Error deleting account:', error);
+    res.status(500).send('1');  // Internal server error
+  }
+});
+
+router.post('/changepassword', async (req, res) => {
+  if (!req.session.user) return res.status(200).send('5');  // Not logged in
+
+  const { username } = req.session.user;
+  const { oldPassword, newPassword, repeatPassword } = req.body;
+
+  if (newPassword !== repeatPassword) return res.status(200).send(['3']);
+  if (!isValidPassword(newPassword, username)) return res.status(200).send(['4']);
+
+  try {
+    await withDB(async (client) => {
+      const result = await client.query('SELECT * FROM accounts WHERE username = $1', [username]);
+
+      const user = result.rows[0];
+      const match = await bcrypt.compare(oldPassword, user.password);
+      if (!match) return res.status(200).send('2');  // Incorrect password
+
+      const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+      await client.query('UPDATE accounts SET password = $1 WHERE username = $2', [hashedPassword, username]);
+      
+      res.status(200).send('0'); // Password change successful
+    });
+  } catch (error) {
+    console.error('Error deleting account:', error);
+    res.status(500).send('1');  // Internal server error
+  }
+});
+
 module.exports = router;

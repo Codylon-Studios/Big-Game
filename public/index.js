@@ -223,8 +223,9 @@ importHtmlPromise.then(() => {
 
                 let notificationBox = document.createElement("notification-box");
                 notificationBox.setAttribute("color", "green");
-                notificationBox.innerHTML = `Welcome back, ${document.getElementById("login-username").value}!`;
+                notificationBox.innerHTML = `Welcome back, <b>${document.getElementById("login-username").value}</b>!`;
                 document.body.appendChild(notificationBox);
+                console.log(socket)
             }
             else if (result == "1") {
                 let notificationBox = document.createElement("notification-box");
@@ -270,7 +271,7 @@ importHtmlPromise.then(() => {
 
                 let notificationBox = document.createElement("notification-box");
                 notificationBox.setAttribute("color", "green");
-                notificationBox.innerHTML = `Registered you successfully as ${document.getElementById("register-username").value}!`;
+                notificationBox.innerHTML = `Registered you successfully as <b>${document.getElementById("register-username").value}</b>!`;
                 document.body.appendChild(notificationBox);
             }
             else if (result == "1") {
@@ -316,7 +317,9 @@ importHtmlPromise.then(() => {
         }, 5000);
     });
 
-
+    //
+    // DELETE FORM
+    //
     document.getElementById("delete-form").addEventListener("submit", (ev) => {
         // Send request to server
         ev.preventDefault();
@@ -347,6 +350,125 @@ importHtmlPromise.then(() => {
                 document.querySelectorAll("#delete-form > .account-error")[0].style.display = "block";
             }
             else if (result == "3") {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `You are not logged in!`;
+                document.body.appendChild(notificationBox);
+            }
+        });
+        setTimeout(() => {
+            if (!hasResponded) {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `The server didn't respond in time!`;
+                document.body.appendChild(notificationBox);
+            }
+        }, 5000);
+    });
+
+    //
+    // CHANGENAME FORM
+    //
+    document.getElementById("changename-button").addEventListener("click", (ev) => {
+        // Send request to server
+        let url = "/account/changename";
+        let data = {
+            newUsername: document.getElementById("changename-name").value,
+            password: document.getElementById("changename-password").value
+        };
+        let hasResponded = false;
+        $.post(url, data, function (result, status) {
+            hasResponded = true;
+            // Handle result
+            if (result == "0") {
+                updateAccountOptions();
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "green");
+                notificationBox.innerHTML = `Your username has been changed to <b>${document.getElementById("changename-name").value}</b>.`;
+                document.body.appendChild(notificationBox);
+            }
+            else if (result == "1") {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `An error has occurred on the server side!`
+                document.body.appendChild(notificationBox);
+            }
+            else if (result == "2") {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `Your password is not correct!`
+                document.body.appendChild(notificationBox);
+            }
+            else if (result == "3") {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `That username is already used!`
+                document.body.appendChild(notificationBox);
+            }
+            else {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `You are not logged in!`;
+                document.body.appendChild(notificationBox);
+            }
+        });
+        setTimeout(() => {
+            if (!hasResponded) {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `The server didn't respond in time!`;
+                document.body.appendChild(notificationBox);
+            }
+        }, 5000);
+    });
+
+    //
+    // CHANGEPASSWORD FORM
+    //
+    document.getElementById("changepassword-button").addEventListener("click", (ev) => {
+        // Send request to server
+        let url = "/account/changepassword";
+        let data = {
+            oldPassword: document.getElementById("changepassword-password-old").value,
+            newPassword: document.getElementById("changepassword-password-new").value,
+            repeatPassword: document.getElementById("changepassword-password-repeat").value
+        };
+        let hasResponded = false;
+        $.post(url, data, function (result, status) {
+            hasResponded = true;
+            // Handle result
+            if (result == "0") {
+                updateAccountOptions();
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "green");
+                notificationBox.innerHTML = `Your password has been changed.`;
+                document.body.appendChild(notificationBox);
+            }
+            else if (result == "1") {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `An error has occurred on the server side!`
+                document.body.appendChild(notificationBox);
+            }
+            else if (result == "2") {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `Your password is not correct!`
+                document.body.appendChild(notificationBox);
+            }
+            else if (result == "3") {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `The new passwords don't match!`
+                document.body.appendChild(notificationBox);
+            }
+            else if (result == "4") {
+                let notificationBox = document.createElement("notification-box");
+                notificationBox.setAttribute("color", "red");
+                notificationBox.innerHTML = `The new password is not valid. It has to be at least 6 characters of at least 2 groups long and can not be your username!`
+                document.body.appendChild(notificationBox);
+            }
+            else {
                 let notificationBox = document.createElement("notification-box");
                 notificationBox.setAttribute("color", "red");
                 notificationBox.innerHTML = `You are not logged in!`;
