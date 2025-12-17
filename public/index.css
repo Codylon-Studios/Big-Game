@@ -1,19 +1,433 @@
 body {
     font-family: "Cantarell", sans-serif;
+    font-size: 1.6vh;
 }
 
-canvas {
-    height: 600px;
-    width: 800px;
-    border-radius: 10px;
+#left-bar {
+    height: 100vh;
     position: absolute;
-    left: 50%;
-    top: 60px;
-    transform: translateX(-50%);
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    left: calc((100vw - 125vh) / 3);
+    top: 0;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
 }
 
-#register-popup-bg, #login-popup-bg {
+#user-icon {
+    width: 10vh;
+    height: 10vh;
+    background-color: #b86;
+    border-radius: 50%;
+    margin-left: 2.5vh;
+}
+
+#user-icon:hover > img {
+    display: none;
+}
+#user-icon:hover > div {
+    display: flex;
+}
+
+#user-icon:not(:hover) > img {
+    display: block;
+}
+
+#user-icon:not(:hover) > div {
+    display: none;
+}
+
+#user-icon > img {
+    width: 10vh;
+    height: 10vh;
+}
+
+#user-icon > div {
+    width: 10vh;
+    height: 10vh;
+    justify-content: center;
+    align-items: center;
+    color: #754;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 2vh;
+}
+
+#user-icon > div > span {
+    text-align: center;
+}
+
+#account-bar {
+    width: 15vh;
+    height: fit-content;
+    background-color: #b86;
+    border: 0.3vh solid #754;
+    border-radius: 1vh;
+    box-sizing: border-box;
+    justify-content: center;
+    text-align: center;
+}
+
+#account-bar > button {
+    width: 80%;
+    margin: 1vh auto;
+    padding: 0.5vh;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 0.5vh;
+    color: white;
+    border: none;
+    background-color: #6cf;
+    display: block;
+}
+
+#account-bar > button:hover {
+    background-color: #37bcff;
+}
+
+#account-delete-button {
+    width: 20%;
+    padding: 0.5vh;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 0.5vh;
+    color: white;
+    border: none;
+    background-color: #f55;
+    display: block;
+}
+
+#account-delete-button:hover {
+    background-color: #ee4b4b;
+}
+
+#control-bar {
+    width: 15vh;
+    height: 55vh;
+    background-color: #b86;
+    border: 0.3vh solid #754;
+    border-radius: 1vh;
+    box-sizing: border-box;
+}
+
+#control-bar > div {
+    height: 5vh;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+#control-bar > div:hover {
+    background-color: #a75;
+    cursor: pointer;
+}
+
+#control-bar > div:hover:nth-child(1) {
+    border-radius: 0.7vh 0.7vh 0 0;
+}
+
+.main-window {
+    height: 90vh;
+    width: 110vh;
+    right: calc((100vw - 125vh) / 3);
+    top: 5vh;
+    position: absolute;
+    border-radius: 1vh;
+}
+
+#play-select {
+    background-color: #b86;
+    border: 0.3vh solid #754;
+    display: none;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#play-select-grid-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#play-select-grid {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(2, 30vh);
+    gap: 5vh;
+    width: fit-content;
+}
+
+.play-select-option {
+    background-color: #a75;
+    border: 0.3vh solid #754;
+    padding: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+    height: 20vh;
+    width: 30vh;
+}
+
+#game {
+    display: none;
+}
+
+#topbar, #bottombar {
+    width: 110vh;
+    height: 5vh;
+    box-sizing: border-box;
+    background-color: #b86;
+    border: 0.3vh solid #754;
+    display: flex;
+    align-items: center;
+    color: #754;
+    font-weight: 900;
+    padding: 0.5vh;
+}
+
+#topbar img, #bottombar img {
+    margin: 0.5vh;
+    width: 3vh;
+    height: 3vh;
+}
+
+#topbar a, #bottombar a {
+    color: #754;
+    text-decoration-thickness: 0.2vh;
+}
+
+#topbar {
+    border-radius: 1vh 1vh 0 0;
+}
+
+#bottombar {
+    border-radius: 0 0 1vh 1vh;
+}
+
+#wrapper-canvas-sidebar {
+    display: flex;
+    width: 110vh;
+    height: 80vh;
+}
+
+#chess-board {
+    height: 80vh;
+    width: 80vh;
+    display: grid;
+    grid-template-rows: repeat(8, 10vh);
+    grid-template-columns: repeat(8, 10vh);
+    box-sizing: border-box;
+}
+
+.chess-field {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chess-field.chess-field-black {
+    background-color: #333333;
+    border: 0.5vh solid #202020;
+}
+
+.chess-field.chess-field-white {
+    background-color: #ffefe4;
+    border: 0.5vh solid #ffd4b7;
+}
+
+.chess-field > img {
+    height: 8vh;
+}
+
+#sidebar {
+    height: 72vh;
+    width: 21vh;
+    border-radius: 0 1vh 1vh 0;
+    position: relative;
+}
+
+.playerbox, .timer, .moves-chat {
+    width: 30vh;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    background-color: #b86;
+    border: 0.3vh solid #754;
+    position: relative;
+    color: #754;
+    font-weight: 900;
+}
+
+.playerbox, .timer {
+    display: flex;
+}
+
+.playerbox {
+    height: 20vh;
+    border-width: 0 0.3vh;
+}
+
+.playerbox img {
+    position: absolute;
+    top: 2vh;
+    height: 10vh;
+    width: 10vh;
+}
+
+.playerinfo {
+    position: absolute;
+    top: 12.6vh;
+    text-align: center;
+}
+
+.stats {
+    font-weight: 700;
+}
+
+.timer {
+    height: 7vh;
+    border-width: 0.3vh;
+    font-size: 4.4vh;
+}
+
+.moves-chat {
+    height: 26vh;
+    border-width: 0 0.3vh;
+}
+
+.moves-chat-select {
+    display: flex;
+}
+
+.moves-chat-select-moves, .moves-chat-select-chat {
+    width: 15vh;
+    height: 3vh;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    cursor: pointer;
+    background-color: #a75;
+    color: #ddd;
+    border-bottom: 0.2vh solid #754;
+}
+
+.moves-chat-select-moves {
+    border-right: 0.2vh solid #754;
+}
+
+.moves-chat-select-moves:hover, .moves-chat-select-chat:hover {
+    background-color: #964;
+}
+
+.chat {
+    display: none;
+}
+
+.moves {
+    display: flex;
+    overflow: scroll;
+    scrollbar-color: #754 transparent;
+    max-height: 22.8vh;
+}
+
+.moves-number, .moves-first, .moves-second {
+    justify-content: center;
+    display: flex;
+}
+
+.moves-number {
+    width: 4vh;
+}
+
+.moves-first, .moves-second {
+    width: 13vh;
+}
+
+.messages {
+    height: 20vh;
+    overflow: scroll;
+    scrollbar-color: #754 transparent;
+}
+
+.message {
+    display: flex;
+    margin: 0.7vh 1vh 0.7vh 0.3vh;
+}
+
+.message img {
+    margin: 0.5vh 0.3vh;
+    height: 2vh;
+    width: 2vh;
+}
+
+.message span {
+    background-color: #a75;
+    height: fit-content;
+    padding: 0.3vh;
+    border-radius: 0.5vh;
+    border: 0.2vh solid #754;
+}
+
+.new-message {
+    width: 29.4vh;
+    height: 2.6vh;
+    background-color: #a75;
+    display: flex;
+    border-top: 0.2vh solid #754;
+    position: relative;
+}
+
+.new-message-input {
+    width: 25.4vh;
+    margin: 0.2vh;
+    color: #754;
+    border: 0.2vh solid #754;
+    border-radius: 0.5vh;
+    outline: none;
+    background-color: #b86;
+    font-weight: 900;
+    font-size: 1.6vh;
+}
+
+.new-message-input::placeholder {
+    opacity: 1;
+}
+
+.new-message-send {
+    cursor: pointer;
+    background-color: #754;
+    padding: 0.3vh;
+    height: fit-content;
+    color: #ddd;
+    border-radius: 0.5vh;
+    position: absolute;
+    top: 0.2vh;
+    right: 0.2vh;
+}
+
+#settings {
+    background-color: #b86;
+    border: 0.3vh solid #754;
+    display: none;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#profile {
+    background-color: #b86;
+    border: 0.3vh solid #754;
+    display: none;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.window-title {
+    color: #754;
+    font-size: 4vh;
+    text-align: center;
+    margin-bottom: 1vh;
+    display: block;
+}
+
+#register-popup-bg, #login-popup-bg, #delete-popup-bg{
     visibility: hidden;
     background-color: rgba(0, 0, 0, 0.5);
     width: 100%;
@@ -23,123 +437,176 @@ canvas {
     left: 0;
 }
 
-#register-popup, #login-popup {
+#register-popup, #login-popup, #delete-popup{
     position: absolute;
     left: 50%;
-    top: 100px;
+    top: 10vh;
     transform: translateX(-50%);
-    width: 400px;
-    border-radius: 13px;
-    border: 4px solid rgba(255, 255, 255, 0.3)
+    width: 40vh;
+    border-radius: 1.3vh;
+    border: 0.4vh solid rgba(255, 255, 255, 0.3)
 }
 
 #register-popup {
-    height: 370px;
+    height: 42vh;
 }
 
-#login-popup {
-    height: 300px;
+#login-popup, #delete-popup {
+    height: 30vh;
 }
 
 #register-popup-header, #login-popup-header {
-    background-color: #5ec4ff;
-    border-radius: 10px 10px 0px 0px;
-    height: 50px;
+    background-color: #6cf;
+    border-radius: 1vh 1vh 0 0;
+    height: 5vh;
     font-weight: bold;
     font-size: large;
     align-items: center;
     justify-content: center;
     display: flex;
-    color: white;
+    color: #fff;
+    position: relative;
+}
+
+#delete-popup-header{
+    background-color: #f55;
+    border-radius: 1vh 1vh 0 0;
+    height: 5vh;
+    font-weight: bold;
+    font-size: large;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    color: #fff;
     position: relative;
 }
 
 .popup-close {
-    background-color: #4eb4ef;
-    padding: 3px;
+    padding: 0.3vh;
     border-radius: 100%;
     cursor: pointer;
     position: absolute;
-    right: 10px;
+    right: 1vh;
+}
+
+#popup-close-login, #popup-close-register {
+    background-color: #5be;
+}
+
+#popup-close-delete {
+    background-color: #e44;
 }
 
 form {
-    background-color: #f2f2f2;
-    border-radius: 0px 0px 10px 10px;
-    padding: 10px;
+    background-color: #eee;
+    border-radius: 0 0 1vh 1vh;
+    padding: 1vh;
     box-sizing: border-box;
     position: relative;
 }
 
 #register-form {
-    height: 320px;
+    height: 37vh;
 }
 
-#login-form {
-    height: 250px;
+#login-form, #delete-form {
+    height: 25vh;
 }
 
 form > input {
-    margin: 5px 0px;
-    border: 1px solid #cccccc;
-    border-radius: 5px;
-    padding: 7px;
-    width: 364px;
+    margin: 0.5vh 0;
+    border: 0.1vh solid #ccc;
+    border-radius: 0.5vh;
+    padding: 0.7vh;
+    width: 36.4vh;
 }
 
 form > button {
     border: none;
-    border-radius: 5px;
-    background-color: #5ec4ff;
-    margin-top: 50px;
-    width: 380px;
-    height: 50px;
+    border-radius: 0.5vh;
+    background-color: #6cf;
+    margin-top: 5vh;
+    width: 38vh;
+    height: 5vh;
     color: white;
     font-weight: bold;
     position: absolute;
-    bottom: 10px;
+    bottom: 1vh;
+}
+
+#delete-form > button {
+    border: none;
+    border-radius: 0.5vh;
+    background-color: #f55;
+    margin-top: 5vh;
+    width: 38vh;
+    height: 5vh;
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    bottom: 1vh;
 }
 
 form > button:hover {
     cursor: pointer;
-    background-color: #4eb4ef;
+    background-color: #5be;
+}
+
+#delete-form > button:hover {
+    cursor: pointer;
+    background-color: #e44;
 }
 
 #user {
-    color: #5ec4ff;
-    font-size: 30px;
+    color: #6cf;
+    font-size: 1vh;
     cursor: pointer;
 }
 
 #account-select {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    width: 80px;
-    padding: 5px;
-    border-radius: 8px;
+    box-shadow: 0 0.4vh 0.8vh 0 rgba(0, 0, 0, 0.2), 0 0.6vh 2vh 0 rgba(0, 0, 0, 0.19);
+    width: 13vh;
+    padding: 0.5vh;
+    border-radius: 0.8vh;
     visibility: hidden;
-    margin-top: 5px;
+    margin-top: 0.5vh;
+    background-color: #fff;
+    position: absolute;
+    z-index: 1;
 }
 
-#account-select-login, #account-select-register {
-    padding: 5px;
-    color: #4eb4ef;
+#account-select-login, #account-select-register, #account-select-logout, #account-select-delete {
+    padding: 0.5vh;
     cursor: pointer;
     font-weight: bold;
-    border-radius: 5px;
+    border-radius: 0.5vh;
 }
 
-#account-select-login:hover, #account-select-register:hover {
-    background-color: #4eb4ef;
+#account-select-login, #account-select-register, #account-select-logout {
+    color: #6cf;
+}
+
+#account-select-delete {
+    color: #f55;
+}
+
+#account-select-login:hover, #account-select-register:hover, #account-select-logout:hover {
+    background-color: #6cf;
+    color: white;
+}
+
+#account-select-delete:hover {
+    background-color: #f55;
     color: white;
 }
 
 .account-error {
-    background-color: #faa;
-    color: #d11;
-    margin: 5px 0px;
-    border-radius: 5px;
-    padding: 3px;
-    border: 1px solid #d11;
-    box-shadow: 0 2px 10px 0px rgba(255, 0, 0, 0.2);
+    background-color: #f99;
+    color: #922;
+    margin: 0.5vh 0;
+    border-radius: 0.5vh;
+    padding: 0.3vh;
+    border: 0.1vh solid #922;
+    box-shadow: 0 0.2vh 1vh 0 rgba(0, 0, 0, 0.2);
     display: none;
 }

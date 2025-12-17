@@ -1,0 +1,86 @@
+.notification-list {
+    position: fixed;
+    right: 0px;
+    top: 0px;
+    height: 100%;
+    width: 235px;
+}
+
+.notification-box-main {
+    width: 180px;
+    height: fit-content;
+    padding: 10px 20px 10px 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+    display: block;
+    margin: 10px;
+}
+
+.notification-box-progressbar {
+    height: 2px;
+    width: 206px;
+    position: absolute;
+    bottom: 0px;
+    right: 2px;
+}
+
+.notification-box-green-progressbar {
+    background-color: #492;
+}
+
+.notification-box-red-progressbar {
+    background-color: #922;
+}
+
+.notification-box-blue-progressbar {
+    background-color: #259;
+}
+
+.notification-box-main-green {
+    background-color: #bf9;
+    color: #050;
+    border: 2px solid #492;
+}
+
+.notification-box-main-red {
+    background-color: #f99;
+    color: #500;
+    border: 2px solid #922;
+}
+
+.notification-box-main-blue {
+    background-color: #9cf;
+    color: #025;
+    border: 2px solid #259;
+}
+
+.notification-box-main > svg {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    cursor: pointer;
+}
+
+.notification-box-main-green > svg > g {
+    stroke: #492;
+}
+
+.notification-box-main-green > svg:hover > g {
+    stroke: #050;
+}
+
+.notification-box-main-red > svg > g {
+    stroke: #922;
+}
+
+.notification-box-main-red > svg:hover > g {
+    stroke: #500;
+}
+
+.notification-box-main-blue > svg > g {
+    stroke: #259;
+}
+
+.notification-box-main-blue > svg:hover > g {
+    stroke: #025;
+}
