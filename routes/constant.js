@@ -15,9 +15,8 @@ const saltRounds = 10;
 const dbConfig = JSON.parse(fs.readFileSync('db_config.json'));
 // Load environment variables from .env file
 dotenv.config();
-// Connect to the PostgreSQL database
 const pool = new Pool(dbConfig);
 
 
-// Export necessary components for use in other modules, e.g. account.js
+// Export necessary components
 module.exports = { pool, saltRounds};

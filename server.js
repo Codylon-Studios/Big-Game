@@ -11,13 +11,12 @@ const express = require('express');
 const { createServer } = require('http');
 const { join } = require('path');
 const session = require('express-session');
+const account = require('./routes/account');
 
 
-// Initialize Express application
+
 const app = express();
-// Create an HTTP server using Express
 const server = createServer(app);
-// Initialize Socket.io for real-time communication
 const io = require('socket.io')(server, {
   cors: {
     origin: "http://localhost:3000",
@@ -28,7 +27,6 @@ const io = require('socket.io')(server, {
   },
 });
 
-// Listen for connections on port 3000
 server.listen(3000, () => {
   console.log('server running at http://localhost:3000');
 });
@@ -36,7 +34,6 @@ server.listen(3000, () => {
 
 // Middleware to parse request bodies
 app.use(express.urlencoded({ extended: true }));
-// Serve static files from the 'public' directory
 app.use(express.static('public'));
 //configure session
 app.use(session({
@@ -46,8 +43,6 @@ app.use(session({
   cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, //10 days
   name: 'UserLogin',
 }));
-//Middleware to connect to account.js (and constant.js)
-const account = require('./routes/account');
 app.use('/account', account);
 
 
